@@ -37,7 +37,7 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     HOTEL_NAME: string;
 
-
+    
 
 
 

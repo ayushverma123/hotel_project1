@@ -6,16 +6,18 @@ import { GetQueryDto } from './dto/query-dto';
 import { CustomerInterfaceResponse } from './interface/CustomerResponse.interface';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtGuard)
+
 @Controller('customers')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @UseGuards(JwtGuard)
   @Get('getalll')
   async getAllBlogs()  {
     return this.customerService.getAllCustomers();
   }
   
+  @UseGuards(JwtGuard)
   @Get('getall')
   async getCustomers(
     @Query() queryDto: GetQueryDto,
@@ -27,6 +29,7 @@ export class CustomerController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get('getbyid/:id')
   async getCustomerById(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.getCustomerById(id);
@@ -38,6 +41,17 @@ export class CustomerController {
     return this.customerService.create(createCustomerDto);
   }
 
+  @UseGuards(JwtGuard)
+  @Put('changePassword/:id')
+  async changePasswordCustomer(
+    @Param('id') id: string,
+    @Body() updateCustomerDto: CreateCustomerDto,
+  ): Promise<CustomerInterfaceResponse | null> {
+    return this.customerService.changePasswordCustomer(id, updateCustomerDto);
+  }
+
+
+  @UseGuards(JwtGuard)
   @Put('updatebyid/:id')
   async updateCustomer(
     @Param('id') id: string,
@@ -45,7 +59,9 @@ export class CustomerController {
   ): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.updateCustomer(id, updateCustomerDto);
   }
+  
 
+  @UseGuards(JwtGuard)
   @Delete('deletebyid/:id')
   async deleteCustomer(@Param('id') id: string): Promise<CustomerInterfaceResponse| null> {
     return this.customerService.deleteCustomer(id);

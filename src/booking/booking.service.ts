@@ -1,3 +1,4 @@
+import { InternalServerErrorException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -6,6 +7,7 @@ import { CreateBookingDto } from './dto/createBooking-dto';
 import { Customer } from 'src/entities/customer.schema';
 import { GetQueryDto } from './dto/query-dto';
 import { CreateCustomerDto } from 'src/customer/dto/createCustomer-dto';
+import { BookingInterfaceResponse } from './interface/BookingResponse-interface';
 
 @Injectable()
 export class BookingService {
@@ -104,7 +106,33 @@ export class BookingService {
     return this.bookingModel.findByIdAndUpdate(id, updateBookingDto, { new: true }).exec();
   }
 
-  async deleteBooking(id: string): Promise<Booking | null> {
-    return this.bookingModel.findByIdAndDelete(id).exec();
-  }
+  async deleteBooking(id: string): Promise<BookingInterfaceResponse | null> {
+    const deletedBooking = await this.bookingModel.findByIdAndDelete(id);
+
+        if (!deletedBooking) {
+            throw new InternalServerErrorException('Unable to delete boooking');
+        }
+
+        return {
+            code: 200,
+            message: 'Booking deleted successfully',
+            status: 'success',
+            data: deletedBooking,
+        };
+    }
+
+    async cancelBooking(id: string): Promise<BookingInterfaceResponse | null> {
+      const deletedBooking = await this.bookingModel.findByIdAndDelete(id);
+  
+          if (!deletedBooking) {
+              throw new InternalServerErrorException('Boooking already canceled');
+          }
+  
+          return {
+              code: 200,
+              message: 'Booking canceled successfully',
+              status: 'success',
+              data: deletedBooking,
+          };
+      }
 }

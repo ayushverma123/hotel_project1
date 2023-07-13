@@ -3,6 +3,7 @@ import { CreateBookingDto } from './dto/createBooking-dto';
 import { BookingService } from './booking.service';
 import { GetQueryDto } from './dto/query-dto';
 import { Booking } from '../entities/booking.schema';
+import { BookingInterfaceResponse } from './interface/BookingResponse-interface';
 
 @Controller('bookings')
 export class BookingController {
@@ -40,7 +41,12 @@ export class BookingController {
   }
 
   @Delete('deletebyid/:id')
-  async deleteBooking(@Param('id') id: string): Promise<Booking | null> {
+  async deleteBooking(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
     return this.bookingService.deleteBooking(id);
   }
+
+  @Delete('cancel/:id')
+    async cancelBooking(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
+        return this.bookingService.deleteBooking(id);
+    }
 }

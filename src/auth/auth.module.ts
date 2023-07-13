@@ -1,3 +1,4 @@
+import { OtpSchema } from 'src/entities/otp.schema';
 import { FrontendCustomerModule } from 'src/frontend_customer/frontend_customer.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
@@ -22,7 +23,7 @@ import { JwtStrategy } from './stratagies/jwt.strategy';
     controllers: [AuthController],
     imports: [
         MongooseModule.forRoot("mongodb+srv://ayushv657:gkczp9LJXpkYnN7u@cluster0.stthbi5.mongodb.net/mydatabase?retryWrites=true&w=majority"),
-        MongooseModule.forFeature([{ name: 'Customer', schema: CustomerSchema }]),
+        MongooseModule.forFeature([{ name: 'Customer', schema: CustomerSchema }, { name: 'Otp', schema: OtpSchema}]),
         JwtModule.register({
             secret: `${process.env.jwt_secret}`,
             signOptions: { expiresIn: '6000s' }, 

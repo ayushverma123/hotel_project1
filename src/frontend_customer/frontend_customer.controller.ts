@@ -11,6 +11,7 @@ import { Hotel } from '../entities/hotel.schema';
 import { HotelService } from 'src/hotel/hotel.service';
 import { GetQueryDto } from 'src/hotel/dto/query-dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { BookingInterfaceResponse } from 'src/booking/interface/BookingResponse-interface';
 
 @Controller('frontend')
 export class FrontendController {
@@ -68,8 +69,13 @@ export class FrontendController {
 
     @UseGuards(JwtGuard)
     @Delete('deletebyid/:id')
-    async deleteBooking(@Param('id') id: string): Promise<Booking | null> {
+    async deleteBooking(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
         return this.bookingService.deleteBooking(id);
+    }
+
+    @Delete('cancel/:id')
+    async cancelBooking(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
+        return this.bookingService.cancelBooking(id);
     }
 }
 

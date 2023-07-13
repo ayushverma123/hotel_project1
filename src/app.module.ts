@@ -1,3 +1,4 @@
+import { OtpSchema } from './entities/otp.schema';
 import { HotelModule } from './hotel/hotel.module';
 import { HotelSchema } from './entities/hotel.schema';
 import { Hotel } from './entities/hotel.schema';
@@ -19,7 +20,7 @@ import { FrontendCustomerModule } from './frontend_customer/frontend_customer.mo
 
 @Module({
   imports: [MongooseModule.forRoot("mongodb+srv://ayushv657:gkczp9LJXpkYnN7u@cluster0.stthbi5.mongodb.net/mydatabase?retryWrites=true&w=majority"),
-  MongooseModule.forFeature([{ name: 'Customer', schema: CustomerSchema  }, { name: 'Hotel', schema: HotelSchema }, { name: 'Booking', schema: BookingSchema}]),
+  MongooseModule.forFeature([{ name: 'Customer', schema: CustomerSchema  }, { name: 'Hotel', schema: HotelSchema }, { name: 'Booking', schema: BookingSchema}, { name: 'Otp', schema: OtpSchema}]),
   AuthModule,
   CustomerModule, HotelModule, BookingModule, FrontendCustomerModule],
   controllers: [BookingController],

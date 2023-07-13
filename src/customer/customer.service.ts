@@ -1,5 +1,5 @@
 import { CustomerInterfaceResponse } from './interface/CustomerResponse.interface';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -100,6 +100,34 @@ export class CustomerService {
       status: 'success',
       data: updatedCustomer,
     };
+  }
+
+
+  async changePasswordCustomer(id: string, updateCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse | null> {
+
+    const updatedCustomer = await this.customerModel.findByIdAndUpdate(id, updateCustomerDto, { new: true }).exec();
+
+    if (!updatedCustomer) {
+      throw new InternalServerErrorException('Unable to change Customer password');
+    }
+
+    return {
+      code: 200,
+      message: 'Customer password changed successfully',
+      status: 'success',
+      data: updatedCustomer,
+    };
+  }
+
+
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    const customer = await this.customerModel.findOne({ email });
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+  
+    customer.password = newPassword;
+    await customer.save();
   }
 
 
