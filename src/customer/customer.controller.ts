@@ -1,3 +1,5 @@
+import { ValidationPipe } from '@nestjs/common';
+import { UsePipes } from '@nestjs/common';
 import { Controller, Get, Post, Put, Delete, Param, Body , Query, UseGuards} from '@nestjs/common';
 import { CreateCustomerDto } from './dto/createCustomer-dto';
 import { CustomerService } from './customer.service';
@@ -12,7 +14,7 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @UseGuards(JwtGuard)
-  @Get('getalll')
+  @Get('getloginInfo')
   async getAllBlogs()  {
     return this.customerService.getAllCustomers();
   }
@@ -35,7 +37,7 @@ export class CustomerController {
     return this.customerService.getCustomerById(id);
   }
 
-
+  @UsePipes(new ValidationPipe())
   @Post('create')
   async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<Customer> {
     return this.customerService.create(createCustomerDto);
@@ -66,4 +68,10 @@ export class CustomerController {
   async deleteCustomer(@Param('id') id: string): Promise<CustomerInterfaceResponse| null> {
     return this.customerService.deleteCustomer(id);
   }
+
+  @Get('getallemails')
+  async getAllCustomerEmails(): Promise<string[]> {
+    return this.customerService.getAllCustomerEmails();
+  }
+  
 }

@@ -1,4 +1,4 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException , NotFoundException} from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -32,9 +32,22 @@ export class BookingService {
        cusId: customer._id,
        customerID: customer._id,
     };
+    const existingBooking = await this.bookingModel.findOne({
+      cusId: createBookingDto.cusId
+      // Add additional properties if necessary for uniqueness check
+  });
+  
+    if (existingBooking) {
+      // Customer with the same details already exists, throw an error
+      throw new NotFoundException('Booking already exist');
+    }
+    else {
     const createdBooking = new this.bookingModel(newBlogData);
     return createdBooking.save();
   }
+
+}
+  
   
   async getFilteredBookings(queryDto: GetQueryDto): Promise<Booking[]> {
     const { search, limit, pageNumber, pageSize, fromDate, toDate } = queryDto;
@@ -98,13 +111,81 @@ export class BookingService {
     ]).exec();
   }
 
+  /*
   async getBookingById(id: string): Promise<Booking | null> {
+
+    const checkBooking= await this.bookingModel.findById(id);
+    if(!checkBooking)
+    {
+      throw new NotFoundException('no booking');
+    }
+    else{
     return this.bookingModel.findById(id).exec();
   }
-   
+}
+*/
+
+async getBookingById(id: string): Promise<BookingInterfaceResponse> {
+  try {
+    const FoundBooking = await this.bookingModel.findByIdAndDelete(id).exec();
+
+    if (!FoundBooking) {
+      throw new NotFoundException('Unable to find booking');
+    }
+      else{
+
+          return {
+              code: 200,
+              message: 'Booking found successfully',
+              status: 'success',
+              data: FoundBooking,
+          };
+      }
+    }
+   catch (error) {
+    // Handle the specific CastError here
+    if (error) {
+      throw new NotFoundException('Invalid hotel ID');
+    }
+
+    // Handle other potential errors or rethrow them
+    throw error;
+  }
+}
+
+
+async updateBooking(id: string, updateBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse> {
+  try {
+      const updatedBooking = await this.bookingModel.findByIdAndUpdate(id, updateBookingDto, { new: true }).exec();
+
+    if (!updatedBooking) {
+      throw new NotFoundException('Unable to update booking');
+    }
+      else{
+
+          return {
+              code: 200,
+              message: 'Booking updated successfully',
+              status: 'success',
+              data: updatedBooking,
+          };
+      }
+    }
+   catch (error) {
+    // Handle the specific CastError here
+    if (error) {
+      throw new NotFoundException('Invalid booking ID');
+    }
+
+    // Handle other potential errors or rethrow them
+    throw error;
+  }
+}
+   /*
   async updateBooking(id: string, updateBookingDto: CreateBookingDto): Promise<Booking | null> {
     return this.bookingModel.findByIdAndUpdate(id, updateBookingDto, { new: true }).exec();
   }
+  */
 
   async deleteBooking(id: string): Promise<BookingInterfaceResponse | null> {
     const deletedBooking = await this.bookingModel.findByIdAndDelete(id);
@@ -120,6 +201,37 @@ export class BookingService {
             data: deletedBooking,
         };
     }
+
+
+async deleteBookingnew(id: string): Promise<BookingInterfaceResponse> {
+  try {
+    const deletedBooking = await this.bookingModel.findByIdAndDelete(id).exec();
+
+    if (!deletedBooking) {
+      throw new NotFoundException('Unable to delete booking');
+    }
+      else{
+
+          return {
+              code: 200,
+              message: 'Booking deleted successfully',
+              status: 'success',
+              data: deletedBooking,
+          };
+      }
+    }
+   catch (error) {
+    // Handle the specific CastError here
+    if (error) {
+      throw new NotFoundException('Invalid booking ID');
+    }
+
+    // Handle other potential errors or rethrow them
+    throw error;
+  }
+}
+
+
 
     async cancelBooking(id: string): Promise<BookingInterfaceResponse | null> {
       const deletedBooking = await this.bookingModel.findByIdAndDelete(id);

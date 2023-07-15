@@ -6,7 +6,7 @@ import { CreateCustomerDto } from 'src/customer/dto/createCustomer-dto';
 import { Booking } from 'src/entities/booking.schema';
 import { BookingService } from 'src/booking/booking.service';
 import { CreateBookingDto } from 'src/booking/dto/createBooking-dto';
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Request, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Hotel } from '../entities/hotel.schema';
 import { HotelService } from 'src/hotel/hotel.service';
 import { GetQueryDto } from 'src/hotel/dto/query-dto';
@@ -39,13 +39,14 @@ export class FrontendController {
         }
     }
 
-    @UseGuards(JwtGuard)
+    @UsePipes(new ValidationPipe())
     @Post('createCustomer')
     async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<Customer> {
         return this.customerService.create(createCustomerDto);
     }
 
 
+    @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
     @Post('createBooking')
     async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
@@ -54,7 +55,7 @@ export class FrontendController {
 
     @UseGuards(JwtGuard)
     @Get('getbyid/:id')
-    async getBookingById(@Param('id') id: string): Promise<Booking | null> {
+    async getBookingById(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
         return this.bookingService.getBookingById(id);
     }
 
@@ -63,7 +64,7 @@ export class FrontendController {
     async updateBooking(
         @Param('id') id: string,
         @Body() updateBookingDto: CreateBookingDto,
-    ): Promise<Booking | null> {
+    ): Promise<BookingInterfaceResponse | null> {
         return this.bookingService.updateBooking(id, updateBookingDto);
     }
 

@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 
 export class CreateBookingDto {
 
+   
     @IsMongoId()
     @IsNotEmpty()
     cusId: ObjectId;

@@ -1,4 +1,4 @@
-import { IsNumber, IsDate, IsString, IsNotEmpty } from 'class-validator';
+import {IsMobilePhone,IsEmail, IsNumber, IsDate, IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateCustomerDto {
 
@@ -13,7 +13,7 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     lastName: string;
 
-    @IsString()
+    @IsEmail()
     @IsNotEmpty()
     email: string;
 
@@ -21,7 +21,7 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     password: string;
 
-    @IsNumber()
+    @IsMobilePhone()
     @IsNotEmpty()
     mobileNo: number;
 

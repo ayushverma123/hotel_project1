@@ -1,3 +1,7 @@
+import { HttpExceptionFilter } from './exceptions/httpFilter-exception';
+import { UseFilters } from '@nestjs/common/decorators';
+import { UsePipes } from '@nestjs/common/decorators';
+import { ValidationPipe } from '@nestjs/common/pipes';
 import { Controller, Get, Post, Put, Delete, Param, Body , Query, UseGuards} from '@nestjs/common';
 import { Hotel } from '../entities/hotel.schema';
 import { HotelService } from './hotel.service';
@@ -26,22 +30,23 @@ export class HotelController {
     return this.hotelService.getHotelById(id);
   }
 
-
+  @UsePipes(new ValidationPipe())
   @Post('create')
   async createHotel(@Body() createHotelDto: CreateHotelDto): Promise<Hotel> {
     return this.hotelService.createHotel(createHotelDto);
   }
 
+  @UseFilters(HttpExceptionFilter)
   @Put('updatebyid/:id')
   async updateHotel(
     @Param('id') id: string,
     @Body() updateHotelDto: CreateHotelDto,
   ): Promise<HotelInterfaceResponse | null> {
-    return this.hotelService.updateHotel(id, updateHotelDto);
+    return this.hotelService.updateHotelnew(id, updateHotelDto);
   }
 
   @Delete('deletebyid/:id')
-  async deleteHotel(@Param('id') id: string): Promise<HotelInterfaceResponse| null> {
-    return this.hotelService.deleteHotel(id);
+  async deleteHotel(@Param('id') id: string): Promise<HotelInterfaceResponse | null> {
+    return this.hotelService.deleteHotelnew(id);
   }
 }

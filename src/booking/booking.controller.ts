@@ -1,3 +1,5 @@
+import { UsePipes } from '@nestjs/common/decorators';
+import { ValidationPipe } from '@nestjs/common/pipes';
 import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { CreateBookingDto } from './dto/createBooking-dto';
 import { BookingService } from './booking.service';
@@ -21,12 +23,12 @@ export class BookingController {
   }
 
 
-
   @Get('getbyid/:id')
-  async getBookingById(@Param('id') id: string): Promise<Booking | null> {
+  async getBookingById(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
     return this.bookingService.getBookingById(id);
   }
 
+  @UsePipes(new ValidationPipe())
   @Post('create')
   async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
     return this.bookingService.createBooking(createBookingDto);
@@ -36,13 +38,13 @@ export class BookingController {
   async updateBooking(
     @Param('id') id: string,
     @Body() updateBookingDto: CreateBookingDto,
-  ): Promise<Booking | null> {
+  ): Promise<BookingInterfaceResponse | null> {
     return this.bookingService.updateBooking(id, updateBookingDto);
   }
 
   @Delete('deletebyid/:id')
   async deleteBooking(@Param('id') id: string): Promise<BookingInterfaceResponse | null> {
-    return this.bookingService.deleteBooking(id);
+    return this.bookingService.deleteBookingnew(id);
   }
 
   @Delete('cancel/:id')
