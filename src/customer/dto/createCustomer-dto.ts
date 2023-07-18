@@ -1,10 +1,7 @@
 import {IsMobilePhone,IsEmail, IsNumber, IsDate, IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateCustomerDto {
-
-    @IsString()
-    name: string;
-    
+        
     @IsString()
     @IsNotEmpty()
     firstName: string;
@@ -32,10 +29,6 @@ export class CreateCustomerDto {
     @IsString()
     @IsNotEmpty()
     gender: string;
-
-    @IsString()
-    @IsNotEmpty()
-    HOTEL_NAME: string;
 
     
 

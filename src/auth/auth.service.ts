@@ -16,11 +16,15 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectModel('Otp') private readonly otpModel: Model<Otp>,
     @InjectModel('Access') private readonly accessModel: Model<Access>,
+    @InjectModel('Customer') private readonly customerModel: Model<Customer>
   ) { }
+  
   async validateUser(username: string, password: string) {
-    const user = await this.userService.findOneWithUserName(username);
 
+    const user = await this.userService.findOneWithUserName(username);
+    console.log(password);
     if (user && (await bcrypt.compare(password, user.password))) {
+      console.log(user.password);
       const { password, ...result } = user;
       return result;
     }
@@ -33,16 +37,17 @@ export class AuthService {
     const payload = {
       username: user.email,
       sub: {
-        name: user.name,
+        name: user.firstName
+        ,
       },
     };
-    console.log(user);
+   // console.log(user);
     const accessToken = this.jwtService.sign(payload);
-    console.log(accessToken);
+   // console.log(accessToken);
 
     
     const { password, ...userWithoutPassword } = user;
-    console.log(user);
+   // console.log(user);
     const access_customer = { ...userWithoutPassword }; 
      // Use the modified user object without the password field
 
@@ -75,10 +80,15 @@ export class AuthService {
 
   async generateOtp(email: string): Promise<string> {
     const otp = Math.floor(100000 + Math.random() * 900000);
-
-    // Save OTP to the OTP collection
+  
+    const check_email = await this.customerModel.findOne({ email });
+  
+    if (!check_email) {
+      throw new NotFoundException('Invalid email');
+    }
+  
     await this.otpModel.create({ email, otp });
-
+  
     return otp.toString();
   }
 
@@ -90,14 +100,14 @@ export class AuthService {
     }
 
     // Update the customer's password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await this.userService.updatePassword(email, hashedPassword);
+   // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.userService.updatePassword(email, newPassword);
 
     // Delete the OTP entry
     await this.otpModel.deleteOne({ _id: otpEntry._id });
 
     // Return the updated user object
-    const updatedUser = { email, password: hashedPassword }; // Assuming the user object has 'email' property
+    const updatedUser = { email, password: newPassword }; // Assuming the user object has 'email' property
     return updatedUser;
   }
 }

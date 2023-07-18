@@ -1,4 +1,4 @@
-import { IsDate, IsString, IsNumber, IsOptional } from "class-validator";
+import {IsIn, IsDate, IsString, IsNumber, IsOptional } from "class-validator";
 
 export class GetQueryDto {
 
@@ -53,6 +53,18 @@ export class GetQueryDto {
     @IsString()
     @IsOptional()
     cus_email: string;
+
+    @IsString()
+    @IsOptional()
+    @IsIn(['room_type', 'identity_type'])
+    sortField?: string;
+
+    @IsString()
+    @IsOptional()
+    @IsIn(['asc', 'desc'])
+    sortOrder?: string;
+
+
 
 
 

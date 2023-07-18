@@ -1,4 +1,4 @@
-import { CastError } from 'mongoose';
+import { CastError, SortOrder } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
@@ -49,7 +49,7 @@ export class HotelService {
     }
 
     async getFilteredHotels(queryDto: GetQueryDto): Promise<Hotel[]> {
-        const { search, limit, pageNumber, pageSize, fromDate, toDate } = queryDto;
+        const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder } = queryDto;
         const query = this.hotelModel.find();
 
 
@@ -68,6 +68,12 @@ export class HotelService {
             const skip = (pageNumber - 1) * pageSize;
             query.skip(skip).limit(pageSize);
         }
+
+        if (sortField && sortOrder) {
+          const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
+          query.sort(sortOptions);
+        }
+      
 
         return query.exec();
 

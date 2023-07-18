@@ -1,7 +1,7 @@
 import { InternalServerErrorException , NotFoundException} from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import { Booking } from '../entities/booking.schema';
 import { CreateBookingDto } from './dto/createBooking-dto';
 import { Customer } from 'src/entities/customer.schema';
@@ -50,7 +50,7 @@ export class BookingService {
   
   
   async getFilteredBookings(queryDto: GetQueryDto): Promise<Booking[]> {
-    const { search, limit, pageNumber, pageSize, fromDate, toDate } = queryDto;
+    const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder} = queryDto;
     const query = this.bookingModel.find();
 
 
@@ -68,6 +68,11 @@ export class BookingService {
     if (pageNumber && pageSize) {
         const skip = (pageNumber - 1) * pageSize;
         query.skip(skip).limit(pageSize);
+    }
+
+    if (sortField && sortOrder) {
+      const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
+      query.sort(sortOptions);
     }
 
     return query.exec();

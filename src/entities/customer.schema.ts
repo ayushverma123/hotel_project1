@@ -10,8 +10,6 @@ export interface Customer extends Document {
     date_of_birth: Date;
     gender: string,
     password: string;
-    name: string;
-    HOTEL_NAME: string;
     
 }
 
@@ -25,8 +23,6 @@ export const CustomerSchema: Schema = new Schema({
     date_of_birth: { type: Date, required: true},
     gender: { type: String, required: true },
     password: {type: String, required: true},
-    name: { type: String, required: true },
-    HOTEL_NAME: { type: String, required: true},
 });
 
 

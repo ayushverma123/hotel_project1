@@ -36,7 +36,6 @@ export class AuthController {
   @Post('login-after-reset')
   async loginAfterReset(@Request() req) {
     const user = req.user; // Get the user object from the request
-
     // Call the login method in the AuthService to generate a new token
     const token = await this.authService.login(user);
 
