@@ -18,12 +18,12 @@ export class AuthController {
 
   ) { }
 
-/*
+
   @Get('getloginInfo')
   async getAllCustomersAccess() {
     return this.authService.getAllCustomers();
   }
-  */
+  
   
 
   @UseGuards(LocalAuthGuard)

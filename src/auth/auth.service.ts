@@ -41,17 +41,10 @@ export class AuthService {
         ,
       },
     };
-   // console.log(user);
-    const accessToken = this.jwtService.sign(payload);
-   // console.log(accessToken);
+    const user_information = user; 
 
+    await this.accessModel.create({user_information });
     
-    const { password, ...userWithoutPassword } = user;
-   // console.log(user);
-    const access_customer = { ...userWithoutPassword }; 
-     // Use the modified user object without the password field
-
-    await this.accessModel.create({access_customer });
     return {
       accessToken: this.jwtService.sign(payload),
     };
@@ -62,21 +55,9 @@ export class AuthService {
   }
 
   async getAllCustomers(): Promise<Access[]> {
-    return this.accessModel.find({}, { password: 0 }).exec();
+    return this.accessModel.find({}, { 'user_information.password': 0 }).exec();
   }
 
-  /*
-  async fetchCustomerWithAccessToken(user: Customer) {
-
-    const access_token = await this.login(user);
-    const emailTostore = user.email;
-    console.log(emailTostore);
-    await this.accessModel.create({emailTostore, access_token});
-    
-    
-
-  }
-  */
 
   async generateOtp(email: string): Promise<string> {
     const otp = Math.floor(100000 + Math.random() * 900000);
