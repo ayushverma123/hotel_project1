@@ -23,21 +23,24 @@ export class CustomerService {
   }  */
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer | null> {
-    // Check if a customer with the same details already exists
+    // Check if a customer with the same email or mobile number already exists
     const existingCustomer = await this.customerModel.findOne({
-      email: createCustomerDto.email
-      // Add additional properties if necessary for uniqueness check
-  });
-  
+      $or: [
+        { email: createCustomerDto.email },
+        { mobileNo: createCustomerDto.mobileNo }
+      ]
+    });
+    
     if (existingCustomer) {
-      // Customer with the same details already exists, throw an error
-      throw new NotFoundException('Customer already exist');
+      // Customer with the same email or mobile number already exists, throw an error
+      throw new NotFoundException('Customer already exists');
     }
   
     // No existing customer found, create a new one
     const createdCustomer = await this.customerModel.create(createCustomerDto);
     return createdCustomer.save();
   }
+ 
   
   async getAllCustomers(): Promise<Customer[]> {
     return this.customerModel.find({}, { password: 0 }).exec();

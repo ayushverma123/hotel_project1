@@ -75,10 +75,12 @@ export class GetQueryDto {
     @IsIn(['hotel_name', 'country', 'state', 'city', 'address'])
     sortField?: string;
 
-    @IsString()
+   @IsString()
     @IsOptional()
     @IsIn(['asc', 'desc'])
     sortOrder?: string;
+
+    
 
 
 

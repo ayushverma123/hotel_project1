@@ -25,7 +25,7 @@ export class BookingService {
     const { cusId, ...bookingData } = createBookingDto;
     const customer = await this.customerModel.findById(cusId);
     if (!customer) {
-      throw new Error('Invalid customerId');
+      throw new NotFoundException("Invalid customer");
     }
     const newBlogData = {
       ...bookingData,
@@ -33,7 +33,8 @@ export class BookingService {
        customerID: customer._id,
     };
     const existingBooking = await this.bookingModel.findOne({
-      cusId: createBookingDto.cusId
+       hote_id:createBookingDto.hote_id
+      
       // Add additional properties if necessary for uniqueness check
   });
   

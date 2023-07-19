@@ -24,7 +24,7 @@ export class CustomerController {
   async getCustomers(
     @Query() queryDto: GetQueryDto,
   ): Promise<Customer[]> {
-    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize) {
+    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize  || queryDto.sortField || queryDto.sortOrder) {
       return this.customerService.getFilteredCustomers(queryDto);
     } else {
       return this.customerService.getAllCustomers();

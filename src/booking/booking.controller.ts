@@ -15,7 +15,7 @@ export class BookingController {
   async getBookings(
     @Query() queryDto: GetQueryDto,
   ): Promise<Booking[]> {
-    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize) {
+    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
       return this.bookingService.getFilteredBookings(queryDto);
     } else {
       return this.bookingService.getAllBooking();
