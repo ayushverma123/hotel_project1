@@ -39,9 +39,9 @@ export class AuthService {
         ,
       },
     };
-    const user_information = user; 
+  //  const user_information = user; 
 
-    await this.accessModel.create({user_information });
+   // await this.accessModel.create({user_information });
     
     return {
       accessToken: this.jwtService.sign(payload),
