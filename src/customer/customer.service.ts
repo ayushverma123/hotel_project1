@@ -33,7 +33,7 @@ export class CustomerService {
     
     if (existingCustomer) {
       // Customer with the same email or mobile number already exists, throw an error
-      throw new NotFoundException('Customer already exists');
+      throw new NotFoundException('Email and mobile no already exists');
     }
   
     // No existing customer found, create a new one
