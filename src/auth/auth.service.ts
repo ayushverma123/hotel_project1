@@ -39,23 +39,19 @@ export class AuthService {
         ,
       },
     };
-  //  const user_information = user; 
+    const User = user; 
 
-   // await this.accessModel.create({user_information });
+    await this.accessModel.create({User });
     
     return {
       accessToken: this.jwtService.sign(payload),
     };
   }
 
-  async getAllCustomersAccessTokens(): Promise<Access[]> {
-    return this.accessModel.find().exec();
+  async getAllCustomers(): Promise<any[]> {
+    return this.accessModel.find({}, { '__v': 0, '_id': 0, 'User.password': 0 }).exec();
   }
-
-  async getAllCustomers(): Promise<Access[]> {
-    return this.accessModel.find({}, { 'user_information.password': 0 }).exec();
-  }
-
+ 
 
   async generateOtp(email: string): Promise<string> {
     const otp = Math.floor(100000 + Math.random() * 900000);
