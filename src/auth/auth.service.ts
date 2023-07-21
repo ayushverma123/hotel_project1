@@ -22,9 +22,7 @@ export class AuthService {
   async validateUser(username: string, password: string) {
 
     const user = await this.userService.findOneWithUserName(username);
-    console.log(password);
     if (user && (await bcrypt.compare(password, user.password))) {
-      console.log(user.password);
       const { password, ...result } = user;
       return result;
     }
@@ -41,22 +39,38 @@ export class AuthService {
         ,
       },
     };
-    const user_information = user; 
+    const User = user; 
 
-    await this.accessModel.create({user_information });
+    await this.accessModel.create({User});
     
     return {
       accessToken: this.jwtService.sign(payload),
     };
   }
 
-  async getAllCustomersAccessTokens(): Promise<Access[]> {
-    return this.accessModel.find().exec();
+  async getUsersByEmail(email:string) {
+    try {
+      const users = await this.accessModel.find({ email });
+      return users;
+    } catch (error) {
+      // Handle the error appropriately (e.g., log it or throw a custom error)
+      throw new Error('Failed to fetch users by email.');
+    }
   }
 
-  async getAllCustomers(): Promise<Access[]> {
-    return this.accessModel.find({}, { 'user_information.password': 0 }).exec();
+  async getAllCustomers(): Promise<any[]> {
+    return this.accessModel.find({}, { '__v': 0, '_id': 0, 'User.password': 0 }).exec();
   }
+
+
+  async getOneCustomer(email: String): Promise<any> {
+   return this.accessModel.findOne({email});
+
+  }
+  /*async getAllCustomers(): Promise<Access[]> {
+    return this.accessModel.find({}, { 'user_information.password': 0 },{'_id':0}).exec();
+  }
+  */
 
 
   async generateOtp(email: string): Promise<string> {

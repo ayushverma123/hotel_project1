@@ -5,7 +5,7 @@ import { Schema, Document, model } from 'mongoose';
 export interface Access extends Document {
 
 
-  access_customer: Customer;
+  User: Customer;
  // accessToken: string;
  
   
@@ -13,7 +13,7 @@ export interface Access extends Document {
 
 export const AccessSchema: Schema = new Schema({
 
-  access_customer: { type: Schema.Types.Mixed, required: true },
+  User: { type: Schema.Types.Mixed, required: true },
   //accessToken: { type: String, required: true },
 });
 

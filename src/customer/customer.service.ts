@@ -30,19 +30,19 @@ export class CustomerService {
         { mobileNo: createCustomerDto.mobileNo }
       ]
     });
-    
+
     if (existingCustomer) {
       // Customer with the same email or mobile number already exists, throw an error
       throw new NotFoundException('Customer already exists');
     }
-  
+
     // No existing customer found, create a new one
     const createdCustomer = await this.customerModel.create(createCustomerDto);
     return createdCustomer.save();
   }
- 
-  
-  async getAllCustomers(): Promise<Customer[]> {
+
+
+  async getAllCustomers(): Promise<any> {
     return this.customerModel.find({}, { password: 0 }).exec();
   }
 
@@ -51,8 +51,8 @@ export class CustomerService {
     return customers.map((customer) => customer.email);
   }
 
-  async getFilteredCustomers(queryDto: GetQueryDto): Promise<Customer[]> {
-    const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder} = queryDto;
+  async getFilteredCustomers(queryDto: GetQueryDto): Promise<any> {
+    const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder } = queryDto;
     const query = this.customerModel.find();
 
 
@@ -80,65 +80,72 @@ export class CustomerService {
       });
     }
 
-    
+
     if (sortField && sortOrder) {
       const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
       query.sort(sortOptions);
     }
+
+    const data = await query.exec();
+    const totalRecords = await this.getTotalHotelCount();
+
+    return { data, totalRecords };
+}
+
+async getTotalHotelCount(): Promise<number> {
+    return this.customerModel.countDocuments({});
+}
+
   
-
-    return query.exec();
-
-  }
-/*
-  async getCustomerById(id: string): Promise<CustomerInterfaceResponse | null> {
-    const customerbyId = await this.customerModel.findById(id).exec();
-
-    if (!customerbyId) {
-      throw new InternalServerErrorException('Unable to find Customer');
+  /*
+    async getCustomerById(id: string): Promise<CustomerInterfaceResponse | null> {
+      const customerbyId = await this.customerModel.findById(id).exec();
+  
+      if (!customerbyId) {
+        throw new InternalServerErrorException('Unable to find Customer');
+      }
+  
+      return {
+        code: 200,
+        message: 'Customer found successfully',
+        status: 'success',
+        data: customerbyId,
+      };
     }
-
-    return {
-      code: 200,
-      message: 'Customer found successfully',
-      status: 'success',
-      data: customerbyId,
-    };
-  }
-  */
+    */
 
   async getCustomerById(id: string): Promise<CustomerInterfaceResponse> {
     try {
       const FoundCustomer = await this.customerModel.findByIdAndDelete(id).exec();
-  
+
       if (!FoundCustomer) {
         throw new NotFoundException('Unable to find customer');
       }
-        else{
+      else {
 
-            return {
-                code: 200,
-                message: 'Customer found successfully',
-                status: 'success',
-                data: FoundCustomer,
-            };
-        }
+        return {
+          code: 200,
+          message: 'Customer found successfully',
+          status: 'success',
+          data: FoundCustomer,
+        };
       }
-     catch (error) {
+    }
+    catch (error) {
       // Handle the specific CastError here
       if (error) {
         throw new NotFoundException('Invalid customer ID');
       }
-  
+
       // Handle other potential errors or rethrow them
       throw error;
     }
   }
 
   async findOneWithUserName(username: string) {
-    
+
     return await this.customerModel.findOne({ email: username });
-    
+
   }
 
   /*
@@ -159,33 +166,33 @@ export class CustomerService {
   }
 */
 
- async updateCustomer(id: string, updateCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse> {
-  try {
+  async updateCustomer(id: string, updateCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse> {
+    try {
       const updatedCustomer = await this.customerModel.findByIdAndUpdate(id, updateCustomerDto, { new: true }).exec();
 
-    if (!updatedCustomer) {
-      throw new NotFoundException('Unable to update customer');
-    }
-      else{
+      if (!updatedCustomer) {
+        throw new NotFoundException('Unable to update customer');
+      }
+      else {
 
-          return {
-              code: 200,
-              message: 'Customer updated successfully',
-              status: 'success',
-              data: updatedCustomer,
-          };
+        return {
+          code: 200,
+          message: 'Customer updated successfully',
+          status: 'success',
+          data: updatedCustomer,
+        };
       }
     }
-   catch (error) {
-    // Handle the specific CastError here
-    if (error) {
-      throw new NotFoundException('Invalid customer ID');
-    }
+    catch (error) {
+      // Handle the specific CastError here
+      if (error) {
+        throw new NotFoundException('Invalid customer ID');
+      }
 
-    // Handle other potential errors or rethrow them
-    throw error;
+      // Handle other potential errors or rethrow them
+      throw error;
+    }
   }
-}
 
   async changePasswordCustomer(id: string, updateCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse | null> {
 
@@ -203,59 +210,83 @@ export class CustomerService {
     };
   }
 
-
-  async updatePassword(email: string, newPassword: string): Promise<void> {
+  /*
+  async changePassword(email: string, Password: string): Promise<any> {
     const customer = await this.customerModel.findOne({ email });
     if (!customer) {
       throw new NotFoundException('Customer not found');
     }
   
-    customer.password = newPassword;
+    customer.password = Password;
     await customer.save();
   }
-
-/*
-  async deleteCustomer(id: string): Promise<CustomerInterfaceResponse | null> {
-    //  return this.hotelModel.findByIdAndDelete(id).exec();
-    const deletedCustomer = await this.customerModel.findByIdAndDelete(id);
-
-    if (!deletedCustomer) {
-      throw new InternalServerErrorException('Unable to delete Customer');
+  */
+  async SeeUserExist(email: string): Promise<any> {
+    const Cust = await this.customerModel.findOne({ email });
+    if (Cust) {
+      return Cust;
+    }
+    else {
+      throw new NotFoundException("Customer does not exist");
     }
 
-    return {
-      code: 200,
-      message: 'Customer deleted successfully',
-      status: 'success',
-      data: deletedCustomer,
-    };
-  } */
+
+  }
+
+
+  async updatePassword(email: string, newPassword: string): Promise<any> {
+    const customer = await this.customerModel.findOne({ email });
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+
+    customer.password = newPassword;
+    await customer.save();
+    return newPassword;
+  }
+
+  /*
+    async deleteCustomer(id: string): Promise<CustomerInterfaceResponse | null> {
+      //  return this.hotelModel.findByIdAndDelete(id).exec();
+      const deletedCustomer = await this.customerModel.findByIdAndDelete(id);
+  
+      if (!deletedCustomer) {
+        throw new InternalServerErrorException('Unable to delete Customer');
+      }
+  
+      return {
+        code: 200,
+        message: 'Customer deleted successfully',
+        status: 'success',
+        data: deletedCustomer,
+      };
+    } */
 
 
   async deleteCustomer(id: string): Promise<CustomerInterfaceResponse
   > {
     try {
       const deletedCustomer = await this.customerModel.findByIdAndDelete(id).exec();
-  
+
       if (!deletedCustomer) {
         throw new NotFoundException('Unable to delete customer');
       }
-        else{
+      else {
 
-            return {
-                code: 200,
-                message: 'Customer deleted successfully',
-                status: 'success',
-                data: deletedCustomer,
-            };
-        }
+        return {
+          code: 200,
+          message: 'Customer deleted successfully',
+          status: 'success',
+          data: deletedCustomer,
+        };
       }
-     catch (error) {
+    }
+    catch (error) {
       // Handle the specific CastError here
       if (error) {
         throw new NotFoundException('Invalid customer ID');
       }
-  
+
       // Handle other potential errors or rethrow them
       throw error;
     }

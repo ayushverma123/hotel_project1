@@ -79,10 +79,7 @@ export class GetQueryDto {
     @IsOptional()
     @IsIn(['asc', 'desc'])
     sortOrder?: string;
-
     
 
-
-
-
+    
 }

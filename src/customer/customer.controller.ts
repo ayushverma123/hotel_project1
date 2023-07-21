@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common/exceptions';
 import { ValidationPipe } from '@nestjs/common';
 import { UsePipes } from '@nestjs/common';
 import { Controller, Get, Post, Put, Delete, Param, Body , Query, UseGuards} from '@nestjs/common';
@@ -13,17 +14,12 @@ import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @UseGuards(JwtGuard)
-  @Get('getloginInfo')
-  async getAllBlogs()  {
-    return this.customerService.getAllCustomers();
-  }
   
   @UseGuards(JwtGuard)
   @Get('getall')
   async getCustomers(
     @Query() queryDto: GetQueryDto,
-  ): Promise<Customer[]> {
+  ): Promise<any> {
     if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize  || queryDto.sortField || queryDto.sortOrder) {
       return this.customerService.getFilteredCustomers(queryDto);
     } else {
@@ -43,6 +39,7 @@ export class CustomerController {
     return this.customerService.create(createCustomerDto);
   }
 
+  /*
   @UseGuards(JwtGuard)
   @Put('changePassword/:id')
   async changePasswordCustomer(
@@ -51,9 +48,11 @@ export class CustomerController {
   ): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.changePasswordCustomer(id, updateCustomerDto);
   }
+  */
 
-
+  
   @UseGuards(JwtGuard)
+  @UsePipes(new ValidationPipe())
   @Put('updatebyid/:id')
   async updateCustomer(
     @Param('id') id: string,
@@ -61,6 +60,36 @@ export class CustomerController {
   ): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.updateCustomer(id, updateCustomerDto);
   }
+
+  @UseGuards(JwtGuard)
+  @Put('change-password')
+  async changerCustomerPassword(@Body() body: { email: string, newPassword: string }): Promise<any>{
+    const { email, newPassword } = body;
+    
+    // Verify OTP and reset password
+    const User=await this.customerService.SeeUserExist(email);
+    if(User){
+    const Password= await this.customerService.updatePassword(email, newPassword);
+    return { message:'Password changed successfully', Password}
+    }
+    else{
+      throw new NotFoundException("Cannot reset password");
+
+    }
+    //const updatedUser = await this.customerService.updatePassword(email, newPassword);
+    /*if(updatedUser)
+    {
+    return { message: 'Password changed successfully', user: updatedUser };
+  }
+   else
+{
+    throw new NotFoundException("Cannot reset password");
+
+}
+}
+*/
+  }
+
   
 
   @UseGuards(JwtGuard)

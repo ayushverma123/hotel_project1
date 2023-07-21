@@ -44,40 +44,44 @@ export class HotelService {
       }
 
 
-    async getAllHotels(): Promise<Hotel[]> {
+    async getAllHotels(): Promise<any> {
         return this.hotelModel.find().exec();
     }
 
-    async getFilteredHotels(queryDto: GetQueryDto): Promise<Hotel[]> {
-        const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder} = queryDto;
-        const query = this.hotelModel.find();
-
-
-        if (search) {
-            query.or([
-                { hotel_name: { $regex: search, $options: 'i' } },
-                { country: { $regex: search, $options: 'i' } },
-                { state: { $regex: search, $options: 'i' } },
-                { city: { $regex: search, $options: 'i' } },
-                { address: { $regex: search, $options: 'i' } },
-            
-            ]);
-        }
-
-        if (pageNumber && pageSize) {
-            const skip = (pageNumber - 1) * pageSize;
-            query.skip(skip).limit(pageSize);
-        } 
-
-        if (sortField && sortOrder) {
+    async getFilteredHotels(queryDto: GetQueryDto): Promise<any> {
+      const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder} = queryDto;
+      const query = this.hotelModel.find();
+  
+      if (search) {
+          query.or([
+              { hotel_name: { $regex: search, $options: 'i' } },
+              { country: { $regex: search, $options: 'i' } },
+              { state: { $regex: search, $options: 'i' } },
+              { city: { $regex: search, $options: 'i' } },
+              { address: { $regex: search, $options: 'i' } },
+          ]);
+      }
+  
+      if (pageNumber && pageSize) {
+          const skip = (pageNumber - 1) * pageSize;
+          query.skip(skip).limit(pageSize);
+      }
+  
+      if (sortField && sortOrder) {
           const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
           query.sort(sortOptions);
-        }
-      
-
-        return query.exec();
-
-    }
+      }
+  
+      const data = await query.exec();
+      const totalRecords = await this.getTotalHotelCount();
+  
+      return { data, totalRecords };
+  }
+  
+  async getTotalHotelCount(): Promise<number> {
+      return this.hotelModel.countDocuments({});
+  }
+    
 
     /*
     async getHotelById(id: string): Promise<HotelInterfaceResponse | null> {

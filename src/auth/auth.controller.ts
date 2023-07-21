@@ -2,7 +2,7 @@
 import { BadRequestException } from '@nestjs/common/exceptions';
 import { Access } from 'src/entities/access.schema';
 import { InternalServerErrorException, NotFoundException } from '@nestjs/common/exceptions';
-import { Body, Controller, Post, Request, UseGuards, Put, Query, Get, Req } from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards, Put, Query, Get, Req, Param} from '@nestjs/common';
 import { CreateCustomerDto } from 'src/customer/dto/createCustomer-dto';
 import { CustomerService } from 'src/customer/customer.service';
 import { AuthService } from './auth.service';
@@ -20,17 +20,17 @@ export class AuthController {
 
 
   @Get('getloginInfo')
-  async getAllCustomersAccess() {
-    return this.authService.getAllCustomers();
+  async getAllCustomersAccess(@Body() body:{ email:string}) {
+    const { email}= body;
+    return this.authService.getOneCustomer(email);
   }
-  
-  
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
     return await this.authService.login(req.user);
   }
+
 
   @UseGuards(LocalAuthGuard)
   @Post('login-after-reset')
@@ -49,6 +49,19 @@ export class AuthController {
      return this.authService.fetchCustomerWithAccessToken(Req.user);
    }
    */
+
+   @Get('FetloginInfo')
+   async getUsersByEmail(@Param('email') email: string) {
+     try {
+       const users = await this.authService.getUsersByEmail(email);
+       if (!users || users.length === 0) {
+         throw new NotFoundException('User not found.');
+       }
+       return users;
+     } catch (error) {
+       throw new InternalServerErrorException('Failed to fetch users by email.');
+     }
+   }
 
   @Post('register')
   async registerUser(@Body() createUserDto: CreateCustomerDto) {
@@ -72,12 +85,19 @@ export class AuthController {
   @Put('reset-password')
   async verifyOtpAndResetPassword(@Body() body: { email: string, otp: string, newPassword: string }) {
     const { email, otp, newPassword } = body;
-
+    
     // Verify OTP and reset password
     const updatedUser = await this.authService.verifyOtpAndResetPassword(email, otp, newPassword);
-
+    if(updatedUser)
+    {
     return { message: 'Password reset successfully', user: updatedUser };
   }
+   else
+{
+    throw new NotFoundException("Cannot reset password");
+
+}
+}
 
 
 }

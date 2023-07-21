@@ -14,7 +14,7 @@ export class BookingController {
   @Get('getall')
   async getBookings(
     @Query() queryDto: GetQueryDto,
-  ): Promise<Booking[]> {
+  ): Promise<any> {
     if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
       return this.bookingService.getFilteredBookings(queryDto);
     } else {
@@ -34,6 +34,7 @@ export class BookingController {
     return this.bookingService.createBooking(createBookingDto);
   }
 
+  @UsePipes(new ValidationPipe())
   @Put('updatebyid/:id')
   async updateBooking(
     @Param('id') id: string,

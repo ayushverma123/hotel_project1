@@ -18,25 +18,29 @@ export class HotelController {
   @Get('getall')
   async getHotels(
     @Query() queryDto: GetQueryDto,
-  ): Promise<Hotel[]> {
+  ): Promise<any> {
     if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
       return this.hotelService.getFilteredHotels(queryDto);
-    } else {
+    } 
+    else {
       return this.hotelService.getAllHotels();
     }
   }
+ 
 
   @Get('getbyid/:id')
   async getHotelById(@Param('id') id: string): Promise<HotelInterfaceResponse | null> {
     return this.hotelService.getHotelById(id);
   }
 
+  @UseGuards(JwtGuard)
   @UsePipes(new ValidationPipe())
   @Post('create')
   async createHotel(@Body() createHotelDto: CreateHotelDto): Promise<Hotel> {
     return this.hotelService.createHotel(createHotelDto);
   }
 
+   @UsePipes(new ValidationPipe())
   @UseFilters(HttpExceptionFilter)
   @Put('updatebyid/:id')
   async updateHotel(

@@ -50,7 +50,7 @@ export class BookingService {
 }
   
   
-  async getFilteredBookings(queryDto: GetQueryDto): Promise<Booking[]> {
+  async getFilteredBookings(queryDto: GetQueryDto): Promise<any> {
     const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder} = queryDto;
     const query = this.bookingModel.find();
 
@@ -76,12 +76,17 @@ export class BookingService {
       query.sort(sortOptions);
     }
 
-    return query.exec();
+    const data = await query.exec();
+    const totalRecords = await this.getTotalHotelCount();
 
+    return { data, totalRecords };
 }
 
+async getTotalHotelCount(): Promise<number> {
+    return this.bookingModel.countDocuments({});
+}
 
-  async getAllBookings(): Promise<Booking[]> {
+  async getAllBookings(): Promise<any> {
     return this.bookingModel.find().exec();
   }
 

@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsNumber, IsString } from "class-validator";
+import {IsEmail,IsObject, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateHotelDto {
 
@@ -26,8 +26,12 @@ export class CreateHotelDto {
     @IsNotEmpty()
     address: string;
 
-    @IsNumber()
-    lat_lon: number;
+    @IsObject()
+    @IsNotEmpty()
+    lat_lon: {
+        lat: string;
+        long: string;
+    };
 
     @IsNumber()
     room_family: number;
@@ -37,6 +41,18 @@ export class CreateHotelDto {
 
     @IsNumber()
     room_deluxe: number;
+
+    @IsString()
+    @IsNotEmpty()
+    contact_person: string
+
+    @IsNumber()
+    @IsNotEmpty()
+    contact_number: number;
+
+    @IsEmail()
+    @IsNotEmpty()
+    contact_email: string;
 
 
 }
