@@ -41,13 +41,18 @@ export class AuthService {
     };
     const User = user; 
 
+<<<<<<< HEAD
     await this.accessModel.create({User});
+=======
+    await this.accessModel.create({User });
+>>>>>>> 111eac619a32f6030d08569d8edf16b45c8616bb
     
     return {
       accessToken: this.jwtService.sign(payload),
     };
   }
 
+<<<<<<< HEAD
   async getUsersByEmail(email:string) {
     try {
       const users = await this.accessModel.find({ email });
@@ -62,6 +67,12 @@ export class AuthService {
     return this.accessModel.find({}, { '__v': 0, '_id': 0, 'User.password': 0 }).exec();
   }
 
+=======
+  async getAllCustomers(): Promise<any[]> {
+    return this.accessModel.find({}, { '__v': 0, '_id': 0, 'User.password': 0 }).exec();
+  }
+ 
+>>>>>>> 111eac619a32f6030d08569d8edf16b45c8616bb
 
   async getOneCustomer(email: String): Promise<any> {
    return this.accessModel.findOne({email});
