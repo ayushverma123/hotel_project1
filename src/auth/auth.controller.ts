@@ -1,13 +1,19 @@
-
+import { JwtPayload } from './jwt-payload.interface';
+import * as jwt from 'jsonwebtoken';
+import { Customer } from 'src/entities/customer.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
 import { Access } from 'src/entities/access.schema';
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common/exceptions';
+import { UnauthorizedException,InternalServerErrorException, NotFoundException } from '@nestjs/common/exceptions';
 import { Body, Controller, Post, Request, UseGuards, Put, Query, Get, Req, Param} from '@nestjs/common';
 import { CreateCustomerDto } from 'src/customer/dto/createCustomer-dto';
 import { CustomerService } from 'src/customer/customer.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshJwtGuard } from './guards/refresh-auth.guard';
+import { JwtGuard } from './guards/jwt-auth.guard';
 
 
 @Controller('auth')
@@ -15,15 +21,77 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: CustomerService,
+    @InjectModel('Access') private readonly accessModel: Model<Access>,
 
   ) { }
 
+  @Get('accessModel')
+  async getUserAccessModel(@Request() request: any) {
+    // Assuming the user object is already set in the request during the authentication process
+    const user = request.user;
 
+    if (!user || !user.email) {
+      throw new UnauthorizedException('Invalid user or missing email');
+    }
+
+    const userEmail = user.email;
+
+    // Use the userEmail to fetch the accessModel record
+    const userRecord = await this.accessModel.findOne({ "User.email": userEmail });
+
+    if (!userRecord) {
+      throw new NotFoundException('User record not found');
+    }
+
+    return userRecord;
+  }
+
+
+  /*
+
+    @Get('accessModel')
+    async getUserAccessModel(@Request() request: any) {
+      const authorization = request.headers.authorization;
+  
+      if (!authorization || !authorization.startsWith('Bearer ')) {
+        throw new UnauthorizedException('Invalid or missing token');
+      }
+  
+      const token = authorization.split(' ')[1];
+  
+      // Decode the token without verifying the signature
+      const decodedToken = jwt.decode(token) as any;
+      
+      // Check if the 'sub' property exists
+      if (!decodedToken.sub || typeof decodedToken.sub !== 'object') {
+        throw new UnauthorizedException('Invalid token or missing sub object');
+      }
+  
+      // Extract the email from the nested 'sub' object in the decoded token
+      const userEmail = decodedToken.sub.email;
+      console.log(userEmail);
+      // Use the userEmail to fetch the accessModel record
+      const userRecord = await this.accessModel.findOne({ "User.email": userEmail });
+  
+      if (!userRecord) {
+        throw new NotFoundException('User record not found');
+      }
+  
+      return userRecord;
+    }
+  
+
+*/
+
+
+
+/*
   @Get('getloginInfo')
   async getAllCustomersAccess(@Body() body:{ email:string}) {
     const { email}= body;
     return this.authService.getOneCustomer(email);
   }
+  */
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -50,6 +118,7 @@ export class AuthController {
    }
    */
 
+   /*
    @Get('FetloginInfo')
    async getUsersByEmail(@Param('email') email: string) {
      try {
@@ -62,6 +131,7 @@ export class AuthController {
        throw new InternalServerErrorException('Failed to fetch users by email.');
      }
    }
+   */
 
   @Post('register')
   async registerUser(@Body() createUserDto: CreateCustomerDto) {
