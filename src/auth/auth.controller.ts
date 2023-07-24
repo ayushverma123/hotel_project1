@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { JwtPayload } from './jwt-payload.interface';
 import * as jwt from 'jsonwebtoken';
 import { Customer } from 'src/entities/customer.schema';
@@ -15,7 +16,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshJwtGuard } from './guards/refresh-auth.guard';
 import { JwtGuard } from './guards/jwt-auth.guard';
 
-
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -68,8 +69,6 @@ getProfile(@Request() req) {
 getProfile(@Request() req) {
    // Access the email property from the user object
   //console.log('getProfile - User Email:', email);
-  console.log(req.user);
-  console.log(req.user.id);
   return req.user;
 }
 /*

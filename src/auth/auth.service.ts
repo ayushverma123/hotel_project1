@@ -29,16 +29,12 @@ export class AuthService {
     return null;
   }
 
+ 
+
 
   async login(user: Customer) {
-
-    const payload = {
-      email: user.email,
-      sub: {
-        name: user.firstName
-        ,
-      },
-    };
+    console.log(user);
+    const payload ={user};
     const User = user; 
     await this.accessModel.create({User});
     
@@ -46,6 +42,7 @@ export class AuthService {
       accessToken: this.jwtService.sign(payload),
     };
   }
+  
 
   async getUsersByEmail(email:string) {
     try {

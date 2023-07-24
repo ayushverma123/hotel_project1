@@ -12,7 +12,9 @@ import { HotelService } from 'src/hotel/hotel.service';
 import { GetQueryDto } from 'src/hotel/dto/query-dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BookingInterfaceResponse } from 'src/booking/interface/BookingResponse-interface';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Frontend')
 @Controller('frontend')
 export class FrontendController {
     constructor(private readonly hotelService: HotelService,

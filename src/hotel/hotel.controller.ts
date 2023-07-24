@@ -1,18 +1,22 @@
+import { ApiOkResponse, ApiNotFoundResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiForbiddenResponse} from '@nestjs/swagger';
 import { HttpExceptionFilter } from './exceptions/httpFilter-exception';
 import { UseFilters } from '@nestjs/common/decorators';
 import { UsePipes } from '@nestjs/common/decorators';
 import { ValidationPipe } from '@nestjs/common/pipes';
-import { Controller, Get, Post, Put, Delete, Param, Body , Query, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
 import { Hotel } from '../entities/hotel.schema';
 import { HotelService } from './hotel.service';
 import { CreateHotelDto } from './dto/createHotel-dto';
 import { GetQueryDto } from './dto/query-dto';
-import { HotelInterfaceResponse} from './interface/HotelResponse.interface';
+import { HotelInterfaceResponse } from './interface/HotelResponse.interface';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Hotels')
 @Controller('hotels')
 export class HotelController {
-  constructor(private readonly hotelService: HotelService) {}
+  constructor(private readonly hotelService: HotelService) { }
 
 
   @Get('getall')
@@ -21,18 +25,21 @@ export class HotelController {
   ): Promise<any> {
     if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
       return this.hotelService.getFilteredHotels(queryDto);
-    } 
+    }
     else {
       return this.hotelService.getAllHotels();
     }
   }
- 
 
+  @ApiOkResponse({ description: 'Successfully retrieved hotel.'})
+  @ApiNotFoundResponse({ description: 'Hotel not found.' })
   @Get('getbyid/:id')
   async getHotelById(@Param('id') id: string): Promise<HotelInterfaceResponse | null> {
     return this.hotelService.getHotelById(id);
   }
 
+  @ApiCreatedResponse({ description: 'The record has been successfully created.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @UseGuards(JwtGuard)
   @UsePipes(new ValidationPipe())
   @Post('create')
@@ -40,7 +47,10 @@ export class HotelController {
     return this.hotelService.createHotel(createHotelDto);
   }
 
-   @UsePipes(new ValidationPipe())
+
+  @ApiOkResponse({ description: 'Successfully retrieved hotel.' })
+@ApiNotFoundResponse({ description: 'Hotel not found.' })
+  @UsePipes(new ValidationPipe())
   @UseFilters(HttpExceptionFilter)
   @Put('updatebyid/:id')
   async updateHotel(
@@ -50,6 +60,9 @@ export class HotelController {
     return this.hotelService.updateHotelnew(id, updateHotelDto);
   }
 
+
+  @ApiOkResponse({ description: 'Successfully retrieved hotel.'})
+@ApiNotFoundResponse({ description: 'Hotel not found.' })
   @Delete('deletebyid/:id')
   async deleteHotel(@Param('id') id: string): Promise<HotelInterfaceResponse | null> {
     return this.hotelService.deleteHotelnew(id);

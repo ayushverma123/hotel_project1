@@ -1,7 +1,10 @@
+import { ApiOkResponse, ApiNotFoundResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { ValidationPipe } from '@nestjs/common';
 import { UsePipes } from '@nestjs/common';
-import { Controller, Get, Post, Put, Delete, Param, Body , Query, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/createCustomer-dto';
 import { CustomerService } from './customer.service';
 import { Customer } from '../entities/customer.schema';
@@ -10,29 +13,34 @@ import { CustomerInterfaceResponse } from './interface/CustomerResponse.interfac
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 
+@ApiTags('Customers')
 @Controller('customers')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(private readonly customerService: CustomerService) { }
 
-  
+
   @UseGuards(JwtGuard)
   @Get('getall')
   async getCustomers(
     @Query() queryDto: GetQueryDto,
   ): Promise<any> {
-    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize  || queryDto.sortField || queryDto.sortOrder) {
+    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
       return this.customerService.getFilteredCustomers(queryDto);
     } else {
       return this.customerService.getAllCustomers();
     }
   }
 
+  @ApiOkResponse({ description: 'Successfully retrieved customer.' })
+  @ApiNotFoundResponse({ description: 'Customer not found.' })
   @UseGuards(JwtGuard)
   @Get('getbyid/:id')
   async getCustomerById(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.getCustomerById(id);
   }
 
+  @ApiCreatedResponse({ description: 'The record has been successfully created.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   @UsePipes(new ValidationPipe())
   @Post('create')
   async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<Customer> {
@@ -50,7 +58,9 @@ export class CustomerController {
   }
   */
 
-  
+
+  @ApiOkResponse({ description: 'Successfully retrieved customer.'})
+  @ApiNotFoundResponse({ description: 'Customer not found.' })
   @UseGuards(JwtGuard)
   @UsePipes(new ValidationPipe())
   @Put('updatebyid/:id')
@@ -63,16 +73,16 @@ export class CustomerController {
 
   @UseGuards(JwtGuard)
   @Put('change-password')
-  async changerCustomerPassword(@Body() body: { email: string, newPassword: string }): Promise<any>{
+  async changerCustomerPassword(@Body() body: { email: string, newPassword: string }): Promise<any> {
     const { email, newPassword } = body;
-    
+
     // Verify OTP and reset password
-    const User=await this.customerService.SeeUserExist(email);
-    if(User){
-    const Password= await this.customerService.updatePassword(email, newPassword);
-    return { message:'Password changed successfully', Password}
+    const User = await this.customerService.SeeUserExist(email);
+    if (User) {
+      const Password = await this.customerService.updatePassword(email, newPassword);
+      return { message: 'Password changed successfully', Password }
     }
-    else{
+    else {
       throw new NotFoundException("Cannot reset password");
 
     }
@@ -90,11 +100,13 @@ export class CustomerController {
 */
   }
 
-  
 
+
+  @ApiOkResponse({ description: 'Successfully retrieved customer.' })
+  @ApiNotFoundResponse({ description: 'Customer not found.' })
   @UseGuards(JwtGuard)
   @Delete('deletebyid/:id')
-  async deleteCustomer(@Param('id') id: string): Promise<CustomerInterfaceResponse| null> {
+  async deleteCustomer(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.deleteCustomer(id);
   }
 
@@ -102,5 +114,5 @@ export class CustomerController {
   async getAllCustomerEmails(): Promise<string[]> {
     return this.customerService.getAllCustomerEmails();
   }
-  
+
 }
