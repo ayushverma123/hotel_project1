@@ -36,7 +36,7 @@ export class HotelController {
   @UseGuards(JwtGuard)
   @UsePipes(new ValidationPipe())
   @Post('create')
-  async createHotel(@Body() createHotelDto: CreateHotelDto): Promise<Hotel> {
+  async createHotel(@Body() createHotelDto: CreateHotelDto): Promise<{ message: string, hotel: Hotel | null }> {
     return this.hotelService.createHotel(createHotelDto);
   }
 

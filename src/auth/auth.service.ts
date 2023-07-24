@@ -40,7 +40,6 @@ export class AuthService {
       },
     };
     const User = user; 
-    console.log(User);
     await this.accessModel.create({User});
     
     return {
@@ -50,7 +49,7 @@ export class AuthService {
 
   async getUsersByEmail(email:string) {
     try {
-      const users = await this.accessModel.find({ email });
+      const users = await this.accessModel.find( {'User.email':email});
       return users;
     } catch (error) {
       // Handle the error appropriately (e.g., log it or throw a custom error)

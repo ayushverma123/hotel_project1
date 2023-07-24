@@ -25,7 +25,7 @@ export class HotelService {
         return createdHotel.save();
     } */
 
-    async createHotel(createHotelDto: CreateHotelDto): Promise<Hotel | null> {
+    async createHotel(createHotelDto: CreateHotelDto): Promise<{ message: string, hotel: Hotel | null }> {
         // Check if a customer with the same details already exists
         const existingHotel = await this.hotelModel.findOne({
           address: createHotelDto.address,
@@ -40,9 +40,11 @@ export class HotelService {
       
         // No existing hotel found, create a new one
         const createdHotel = await this.hotelModel.create(createHotelDto);
-        return createdHotel.save();
+        await createdHotel.save();
+      
+        const successMessage = 'Hotel created successfully';
+        return { message: successMessage, hotel: createdHotel };
       }
-
 
     async getAllHotels(): Promise<any> {
         return this.hotelModel.find().exec();

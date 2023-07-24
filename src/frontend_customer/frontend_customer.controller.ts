@@ -49,7 +49,7 @@ export class FrontendController {
     @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
     @Post('createBooking')
-    async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
+    async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<{ message: string, Booking: Booking | null }> {
         return this.bookingService.createBooking(createBookingDto);
     }
 

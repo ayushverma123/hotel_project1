@@ -30,7 +30,7 @@ export class BookingController {
 
   @UsePipes(new ValidationPipe())
   @Post('create')
-  async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
+  async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<{ message: string, Booking: Booking | null }> {
     return this.bookingService.createBooking(createBookingDto);
   }
 

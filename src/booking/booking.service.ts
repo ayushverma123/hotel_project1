@@ -21,7 +21,7 @@ export class BookingService {
 
   */
   
-  async createBooking(createBookingDto: CreateBookingDto): Promise<Booking> {
+  async createBooking(createBookingDto: CreateBookingDto): Promise<{ message: string, Booking: Booking | null }>{
     const { cusId, ...bookingData } = createBookingDto;
     const customer = await this.customerModel.findById(cusId);
     if (!customer) {
@@ -43,11 +43,14 @@ export class BookingService {
       throw new NotFoundException('Booking already exist');
     }
     else {
-    const createdBooking = new this.bookingModel(newBlogData);
-    return createdBooking.save();
-  }
+      const createdBooking = await this.bookingModel.create(createBookingDto);
+      await createdBooking.save();
+    
+      const successMessage = 'Booking created successfully';
+      return { message: successMessage, Booking: createdBooking };
 
 }
+  }
   
   
   async getFilteredBookings(queryDto: GetQueryDto): Promise<any> {
