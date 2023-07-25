@@ -159,7 +159,7 @@ async getBookingById(id: string): Promise<BookingInterfaceResponse> {
    catch (error) {
     // Handle the specific CastError here
     if (error) {
-      throw new NotFoundException('Invalid hotel ID');
+      throw new NotFoundException('Invalid Booking ID');
     }
 
     // Handle other potential errors or rethrow them
