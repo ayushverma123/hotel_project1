@@ -43,7 +43,7 @@ export class BookingService {
       throw new NotFoundException('Booking already exist');
     }
     else {
-      const createdBooking = await this.bookingModel.create(createBookingDto);
+      const createdBooking = await this.bookingModel.create(newBlogData);
       await createdBooking.save();
     
       const successMessage = 'Booking created successfully';
