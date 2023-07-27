@@ -109,7 +109,7 @@ export class HotelService {
 
     async getHotelById(id: string): Promise<HotelInterfaceResponse> {
         try {
-          const Hotel = await this.hotelModel.findByIdAndDelete(id).exec();
+          const Hotel = await this.hotelModel.findById(id).exec();
       
           if (!Hotel) {
             throw new NotFoundException('Unable to find hotel');
