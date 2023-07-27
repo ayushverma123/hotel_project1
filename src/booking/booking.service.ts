@@ -141,7 +141,7 @@ async getTotalHotelCount(): Promise<number> {
 
 async getBookingById(id: string): Promise<BookingInterfaceResponse> {
   try {
-    const FoundBooking = await this.bookingModel.findByIdAndDelete(id).exec();
+    const FoundBooking = await this.bookingModel.findById(id).exec();
 
     if (!FoundBooking) {
       throw new NotFoundException('Unable to find booking');
