@@ -116,7 +116,7 @@ async getTotalHotelCount(): Promise<number> {
 
   async getCustomerById(id: string): Promise<CustomerInterfaceResponse> {
     try {
-      const FoundCustomer = await this.customerModel.findByIdAndDelete(id).exec();
+      const FoundCustomer = await this.customerModel.findById(id).exec();
 
       if (!FoundCustomer) {
         throw new NotFoundException('Unable to find customer');
