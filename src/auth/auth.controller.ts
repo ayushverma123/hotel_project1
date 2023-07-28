@@ -131,7 +131,7 @@ getProfile(@Request() req) {
   }
 
 
-  @UseGuards(JwtGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('login-after-reset')
   async loginAfterReset(@Request() req) {
     const user = req.user; // Get the user object from the request
