@@ -38,6 +38,11 @@ export class BookingService {
     }
     else {
       const createdBooking = await this.bookingModel.create(newBookingData);
+<<<<<<< HEAD
+=======
+
+      const createdBooking = await this.bookingModel.create(newBlogData);
+>>>>>>> 93dbc5c53d422f1e4dbcd32a9ef08b0b2ef6a21f
       await createdBooking.save();
 
       const successMessage = 'Booking created successfully';
@@ -129,6 +134,10 @@ export class BookingService {
       }
       else {
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 93dbc5c53d422f1e4dbcd32a9ef08b0b2ef6a21f
         return {
           code: 200,
           message: 'Booking found successfully',
@@ -145,6 +154,31 @@ export class BookingService {
 
       // Handle other potential errors or rethrow them
       throw error;
+<<<<<<< HEAD
+=======
+
+async getBookingById(id: string): Promise<BookingInterfaceResponse> {
+  try {
+    const FoundBooking = await this.bookingModel.findById(id).exec();
+
+    if (!FoundBooking) {
+      throw new NotFoundException('Unable to find booking');
+    }
+      else{
+
+          return {
+              code: 200,
+              message: 'Booking found successfully',
+              status: 'success',
+              data: FoundBooking,
+          };
+      }
+    }
+   catch (error) {
+    // Handle the specific CastError here
+    if (error) {
+      throw new NotFoundException('Invalid Booking ID');
+>>>>>>> 93dbc5c53d422f1e4dbcd32a9ef08b0b2ef6a21f
     }
   }
 
@@ -241,4 +275,30 @@ export class BookingService {
       data: deletedBooking,
     };
   }
+<<<<<<< HEAD
 }
+=======
+
+}
+      
+}
+
+
+
+    async cancelBooking(id: string): Promise<BookingInterfaceResponse | null> {
+      const deletedBooking = await this.bookingModel.findByIdAndDelete(id);
+  
+          if (!deletedBooking) {
+              throw new InternalServerErrorException('Boooking already canceled');
+          }
+  
+          return {
+              code: 200,
+              message: 'Booking canceled successfully',
+              status: 'success',
+              data: deletedBooking,
+          };
+      }
+}
+
+>>>>>>> 93dbc5c53d422f1e4dbcd32a9ef08b0b2ef6a21f
