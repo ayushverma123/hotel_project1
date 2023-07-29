@@ -91,12 +91,45 @@ export class HotelService {
           status: 'success',
           data: Hotel,
         };
+<<<<<<< HEAD
       }
     }
     catch (error) {
       // Handle the specific CastError here
       if (error) {
         throw new NotFoundException('Invalid hotel ID');
+=======
+    }*/
+
+
+
+    async getHotelById(id: string): Promise<HotelInterfaceResponse> {
+        try {
+          const Hotel = await this.hotelModel.findById(id).exec();
+      
+          if (!Hotel) {
+            throw new NotFoundException('Unable to find hotel');
+          }
+            else{
+
+                return {
+                    code: 200,
+                    message: 'Hotel found successfully',
+                    status: 'success',
+                    data: Hotel,
+                };
+            }
+          }
+         catch (error) {
+          // Handle the specific CastError here
+          if (error) {
+            throw new NotFoundException('Invalid hotel ID');
+          }
+      
+          // Handle other potential errors or rethrow them
+          throw error;
+        }
+>>>>>>> f757dfab381a218e81058679471a150da054826f
       }
 
       // Handle other potential errors or rethrow them
