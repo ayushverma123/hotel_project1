@@ -13,6 +13,7 @@ import { CustomerInterfaceResponse } from './interface/CustomerResponse.interfac
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 
+
 @ApiTags('Customers')
 @Controller('customers')
 export class CustomerController {
@@ -21,15 +22,10 @@ export class CustomerController {
 
   @UseGuards(JwtGuard)
   @Get('getall')
-  async getCustomers(
-    @Query() queryDto: GetQueryDto,
-  ): Promise<any> {
-    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
-      return this.customerService.getFilteredCustomers(queryDto);
-    } else {
-      return this.customerService.getAllCustomers();
-    }
+  async getCustomers(@Query() queryDto: GetQueryDto): Promise<any> {
+    return this.customerService.getFilteredCustomers(queryDto);
   }
+
 
   @ApiOkResponse({ description: 'Successfully retrieved customer.' })
   @ApiNotFoundResponse({ description: 'Customer not found.' })
@@ -59,7 +55,7 @@ export class CustomerController {
   */
 
 
-  @ApiOkResponse({ description: 'Successfully retrieved customer.'})
+  @ApiOkResponse({ description: 'Successfully retrieved customer.' })
   @ApiNotFoundResponse({ description: 'Customer not found.' })
   @UseGuards(JwtGuard)
   @UsePipes(new ValidationPipe())
@@ -86,20 +82,8 @@ export class CustomerController {
       throw new NotFoundException("Cannot reset password");
 
     }
-    //const updatedUser = await this.customerService.updatePassword(email, newPassword);
-    /*if(updatedUser)
-    {
-    return { message: 'Password changed successfully', user: updatedUser };
-  }
-   else
-{
-    throw new NotFoundException("Cannot reset password");
 
-}
-}
-*/
   }
-
 
 
   @ApiOkResponse({ description: 'Successfully retrieved customer.' })

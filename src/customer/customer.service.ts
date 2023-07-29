@@ -11,16 +11,7 @@ import { GetQueryDto } from './dto/query-dto';
 export class CustomerService {
   constructor(@InjectModel('Customer') private readonly customerModel: Model<Customer>) { }
 
-  /*
-  async createCustomer(createCustomerDto: CreateCustomerDto): Promise<Customer> {
-    const createdCustomer = new this.customerModel(createCustomerDto);
 
-    if (!createdCustomer) {
-      throw new InternalServerErrorException('Unable to create hotel');
-    }
-
-    return createdCustomer.save();
-  }  */
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer | null> {
     // Check if a customer with the same email or mobile number already exists
@@ -46,10 +37,12 @@ export class CustomerService {
     return this.customerModel.find({}, { password: 0 }).exec();
   }
 
+
   async getAllCustomerEmails(): Promise<string[]> {
     const customers = await this.customerModel.find().select('email');
     return customers.map((customer) => customer.email);
   }
+
 
   async getFilteredCustomers(queryDto: GetQueryDto): Promise<any> {
     const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder } = queryDto;
@@ -90,33 +83,16 @@ export class CustomerService {
     const totalRecords = await this.getTotalHotelCount();
 
     return { data, totalRecords };
-}
+  }
 
-async getTotalHotelCount(): Promise<number> {
+  async getTotalHotelCount(): Promise<number> {
     return this.customerModel.countDocuments({});
-}
+  }
 
-  
-  /*
-    async getCustomerById(id: string): Promise<CustomerInterfaceResponse | null> {
-      const customerbyId = await this.customerModel.findById(id).exec();
-  
-      if (!customerbyId) {
-        throw new InternalServerErrorException('Unable to find Customer');
-      }
-  
-      return {
-        code: 200,
-        message: 'Customer found successfully',
-        status: 'success',
-        data: customerbyId,
-      };
-    }
-    */
 
   async getCustomerById(id: string): Promise<CustomerInterfaceResponse> {
     try {
-      const FoundCustomer = await this.customerModel.findByIdAndDelete(id).exec();
+      const FoundCustomer = await this.customerModel.findById(id).exec();
 
       if (!FoundCustomer) {
         throw new NotFoundException('Unable to find customer');
@@ -140,6 +116,13 @@ async getTotalHotelCount(): Promise<number> {
       // Handle other potential errors or rethrow them
       throw error;
     }
+  }
+
+
+  async getCustomerById1(id: string) {
+
+    return await this.customerModel.findById(id).exec();
+
   }
 
   async findOneWithUserName(username: string) {

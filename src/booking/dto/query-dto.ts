@@ -1,4 +1,4 @@
-import {IsIn, IsDate, IsString, IsNumber, IsOptional } from "class-validator";
+import { IsIn, IsDate, IsString, IsNumber, IsOptional } from "class-validator";
 
 export class GetQueryDto {
 
@@ -63,9 +63,6 @@ export class GetQueryDto {
     @IsOptional()
     @IsIn(['asc', 'desc'])
     sortOrder?: string;
-
-
-
 
 
 }

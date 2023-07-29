@@ -29,7 +29,7 @@ export class FrontendController {
         return await this.authService.login(req.user);
     }
 
-
+    @UseGuards(JwtGuard)
     @Get('getall')
     async getHotelsInFrontend(
         @Query() queryDto: GetQueryDto,

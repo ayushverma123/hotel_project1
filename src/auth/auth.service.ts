@@ -1,4 +1,3 @@
-import { Access } from 'src/entities/access.schema';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { Model } from 'mongoose';
 import { Otp } from 'src/entities/otp.schema';
@@ -15,10 +14,9 @@ export class AuthService {
     private readonly userService: CustomerService,
     private jwtService: JwtService,
     @InjectModel('Otp') private readonly otpModel: Model<Otp>,
-    @InjectModel('Access') private readonly accessModel: Model<Access>,
     @InjectModel('Customer') private readonly customerModel: Model<Customer>
   ) { }
-  
+
   async validateUser(username: string, password: string) {
 
     const user = await this.userService.findOneWithUserName(username);
@@ -29,57 +27,29 @@ export class AuthService {
     return null;
   }
 
- 
 
+  async login(user: any) {
+    // Check the content of the "user" object
+    const email = user._doc._id;
+    const payload = { email };
 
-  async login(user: Customer) {
-    console.log(user);
-    const payload ={user};
-    const User = user; 
-    await this.accessModel.create({User});
-    
     return {
       accessToken: this.jwtService.sign(payload),
     };
   }
-  
-
-  async getUsersByEmail(email:string) {
-    try {
-      const users = await this.accessModel.find( {'User.email':email});
-      return users;
-    } catch (error) {
-      // Handle the error appropriately (e.g., log it or throw a custom error)
-      throw new Error('Failed to fetch users by email.');
-    }
-  }
-
-  async getAllCustomers(): Promise<any[]> {
-    return this.accessModel.find({}, { '__v': 0, '_id': 0, 'User.password': 0 }).exec();
-  }
-
-
-  async getOneCustomer(email: String): Promise<any> {
-   return this.accessModel.findOne({email});
-
-  }
-  /*async getAllCustomers(): Promise<Access[]> {
-    return this.accessModel.find({}, { 'user_information.password': 0 },{'_id':0}).exec();
-  }
-  */
 
 
   async generateOtp(email: string): Promise<string> {
     const otp = Math.floor(100000 + Math.random() * 900000);
-  
+
     const check_email = await this.customerModel.findOne({ email });
-  
+
     if (!check_email) {
       throw new NotFoundException('Invalid email');
     }
-  
+
     await this.otpModel.create({ email, otp });
-  
+
     return otp.toString();
   }
 
@@ -91,7 +61,7 @@ export class AuthService {
     }
 
     // Update the customer's password
-   // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.userService.updatePassword(email, newPassword);
 
     // Delete the OTP entry

@@ -39,13 +39,5 @@ export class CreateBookingDto {
     @IsMongoId()
     hote_id: ObjectId;
 
-    
-
-
-
-
-
-
-
 
 }

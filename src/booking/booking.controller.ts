@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
 import { UsePipes } from '@nestjs/common/decorators';
@@ -9,23 +10,18 @@ import { GetQueryDto } from './dto/query-dto';
 import { Booking } from '../entities/booking.schema';
 import { BookingInterfaceResponse } from './interface/BookingResponse-interface';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtGuard)
 @ApiTags('Bookings')
 @Controller('bookings')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) { }
 
   @Get('getall')
-  async getBookings(
-    @Query() queryDto: GetQueryDto,
-  ): Promise<any> {
-    if (queryDto.search || queryDto.limit || queryDto.fromDate || queryDto.toDate || queryDto.pageNumber || queryDto.pageSize || queryDto.sortField || queryDto.sortOrder) {
-      return this.bookingService.getFilteredBookings(queryDto);
-    } else {
-      return this.bookingService.getAllBooking();
-    }
+  async getBookings(@Query() queryDto: GetQueryDto): Promise<any> {
+    return this.bookingService.getFilteredBookings(queryDto);
   }
-
 
   @ApiOkResponse({ description: 'Successfully retrieved Booking.' })
   @ApiNotFoundResponse({ description: 'Booking not found.' })

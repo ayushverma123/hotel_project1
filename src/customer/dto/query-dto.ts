@@ -1,4 +1,4 @@
-import { IsDate, IsString, IsNumber, IsOptional, IsIn} from "class-validator";
+import { IsDate, IsString, IsNumber, IsOptional, IsIn } from "class-validator";
 
 export class GetQueryDto {
 

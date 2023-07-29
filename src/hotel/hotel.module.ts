@@ -6,11 +6,9 @@ import { HotelController } from './hotel.controller';
 
 
 @Module({
-  imports: [MongooseModule.forRoot("mongodb+srv://ayushv657:gkczp9LJXpkYnN7u@cluster0.stthbi5.mongodb.net/mydatabase?retryWrites=true&w=majority"),
-  MongooseModule.forFeature([{ name: 'Hotel', schema: HotelSchema }]),
-  ],
-  controllers: [ HotelController],
-  providers: [ HotelService],
-  exports: [ HotelService ]
+  imports: [MongooseModule.forFeature([{ name: 'Hotel', schema: HotelSchema }]),],
+  controllers: [HotelController],
+  providers: [HotelService],
+  exports: [HotelService]
 })
-export class HotelModule {}
+export class HotelModule { }

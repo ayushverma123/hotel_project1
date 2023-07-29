@@ -1,4 +1,3 @@
-import { AccessSchema } from './entities/access.schema';
 import { HttpExceptionFilter } from './hotel/exceptions/httpFilter-exception';
 import { OtpSchema } from './entities/otp.schema';
 import { HotelModule } from './hotel/hotel.module';
@@ -23,11 +22,12 @@ import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [MongooseModule.forRoot("mongodb+srv://ayushv657:gkczp9LJXpkYnN7u@cluster0.stthbi5.mongodb.net/mydatabase?retryWrites=true&w=majority"),
-  MongooseModule.forFeature([{ name: 'Customer', schema: CustomerSchema  }, { name: 'Hotel', schema: HotelSchema }, { name: 'Booking', schema: BookingSchema}, { name: 'Otp', schema: OtpSchema}, { name: 'Access', schema: AccessSchema  }]),
-  AuthModule,
-  CustomerModule, HotelModule, BookingModule, FrontendCustomerModule,],
-  controllers: [BookingController],
-  providers: [BookingService, {provide: APP_FILTER,
-    useClass: HttpExceptionFilter,}]
+    AuthModule,
+    CustomerModule, HotelModule, BookingModule, FrontendCustomerModule,],
+  controllers: [],
+  providers: [{
+    provide: APP_FILTER,
+    useClass: HttpExceptionFilter,
+  }]
 })
-export class AppModule {}
+export class AppModule { }
