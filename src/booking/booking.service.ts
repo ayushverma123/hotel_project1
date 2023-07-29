@@ -37,11 +37,9 @@ export class BookingService {
       throw new NotFoundException('Booking already exist');
     }
     else {
-<<<<<<< HEAD
       const createdBooking = await this.bookingModel.create(newBookingData);
-=======
+
       const createdBooking = await this.bookingModel.create(newBlogData);
->>>>>>> f757dfab381a218e81058679471a150da054826f
       await createdBooking.save();
 
       const successMessage = 'Booking created successfully';
@@ -133,7 +131,7 @@ export class BookingService {
       }
       else {
 
-<<<<<<< HEAD
+
         return {
           code: 200,
           message: 'Booking found successfully',
@@ -150,7 +148,7 @@ export class BookingService {
 
       // Handle other potential errors or rethrow them
       throw error;
-=======
+
 async getBookingById(id: string): Promise<BookingInterfaceResponse> {
   try {
     const FoundBooking = await this.bookingModel.findById(id).exec();
@@ -172,7 +170,6 @@ async getBookingById(id: string): Promise<BookingInterfaceResponse> {
     // Handle the specific CastError here
     if (error) {
       throw new NotFoundException('Invalid Booking ID');
->>>>>>> f757dfab381a218e81058679471a150da054826f
     }
   }
 
@@ -269,9 +266,9 @@ async getBookingById(id: string): Promise<BookingInterfaceResponse> {
       data: deletedBooking,
     };
   }
-<<<<<<< HEAD
+
 }
-=======
+      
 }
 
 
@@ -291,4 +288,4 @@ async getBookingById(id: string): Promise<BookingInterfaceResponse> {
           };
       }
 }
->>>>>>> f757dfab381a218e81058679471a150da054826f
+
