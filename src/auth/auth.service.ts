@@ -33,22 +33,6 @@ export class AuthService {
     const email = user._doc._id;
     const payload = { email };
 
-<<<<<<< HEAD
-=======
-  async login(user: Customer) {
-
-    const payload = {
-      username: user.email,
-      sub: {
-        name: user.firstName
-        ,
-      },
-    };
-    const User = user; 
-
-    await this.accessModel.create({User });
-    
->>>>>>> f757dfab381a218e81058679471a150da054826f
     return {
       accessToken: this.jwtService.sign(payload),
     };

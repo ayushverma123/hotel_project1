@@ -40,7 +40,7 @@ export class AuthController {
   }
 
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtGuard)
   @Post('login-after-reset')
   async loginAfterReset(@Request() req) {
     const user = req.user; // Get the user object from the request
