@@ -21,6 +21,7 @@ export class BookingController {
   @Get('getall')
   async getBookings(@Query() queryDto: GetQueryDto): Promise<any> {
     return this.bookingService.getFilteredBookings(queryDto);
+
   }
 
   @ApiOkResponse({ description: 'Successfully retrieved Booking.' })
@@ -34,7 +35,7 @@ export class BookingController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @UsePipes(new ValidationPipe())
   @Post('create')
-  async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<{ message: string, Booking: Booking | null }> {
+  async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse | null > {
     return this.bookingService.createBooking(createBookingDto);
   }
 
