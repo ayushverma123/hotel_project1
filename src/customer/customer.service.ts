@@ -13,7 +13,7 @@ export class CustomerService {
 
 
 
-  async create(createCustomerDto: CreateCustomerDto): Promise<Customer | null> {
+  async create(createCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse | null> {
     // Check if a customer with the same email or mobile number already exists
     const existingCustomer = await this.customerModel.findOne({
       $or: [
@@ -29,14 +29,19 @@ export class CustomerService {
 
     // No existing customer found, create a new one
     const createdCustomer = await this.customerModel.create(createCustomerDto);
-    return createdCustomer.save();
+    await createdCustomer.save();
+    return {
+      code: 200,
+      message: 'Customer created successfully',
+      status: 'success',
+      data: createdCustomer,
+    };
   }
 
 
   async getAllCustomers(): Promise<any> {
     return this.customerModel.find({}, { password: 0 }).exec();
   }
-
 
   async getAllCustomerEmails(): Promise<string[]> {
     const customers = await this.customerModel.find().select('email');
@@ -80,7 +85,7 @@ export class CustomerService {
     }
 
     const data = await query.exec();
-    const totalRecords = await this.getTotalHotelCount();
+    const totalRecords = await this.customerModel.find(query.getFilter()).countDocuments();
 
     return { data, totalRecords };
   }
@@ -118,11 +123,11 @@ export class CustomerService {
     }
   }
 
-
   async getCustomerById1(id: string) {
-
-    return await this.customerModel.findById(id).exec();
-
+    return await this.customerModel
+      .findById(id)
+      .select('-password')
+      .exec();
   }
 
   async findOneWithUserName(username: string) {
@@ -227,6 +232,19 @@ export class CustomerService {
     await customer.save();
     return newPassword;
   }
+
+  async updatePassword1(id:string, newpassword:string): Promise<any>
+  {
+    const customer = await this.customerModel.findById(id);
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+
+    customer.password = newpassword;
+    await customer.save();
+    return newpassword;
+  }
+
 
   /*
     async deleteCustomer(id: string): Promise<CustomerInterfaceResponse | null> {
