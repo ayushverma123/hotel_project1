@@ -13,6 +13,7 @@ import { GetQueryDto } from 'src/hotel/dto/query-dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BookingInterfaceResponse } from 'src/booking/interface/BookingResponse-interface';
 import { ApiTags } from '@nestjs/swagger';
+import { CustomerInterfaceResponse } from 'src/customer/interface/CustomerResponse.interface';
 
 @ApiTags('Frontend')
 @Controller('frontend')
@@ -43,7 +44,7 @@ export class FrontendController {
 
     @UsePipes(new ValidationPipe())
     @Post('createCustomer')
-    async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<Customer> {
+    async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse> {
         return this.customerService.create(createCustomerDto);
     }
 
@@ -51,7 +52,7 @@ export class FrontendController {
     @UsePipes(new ValidationPipe())
     @UseGuards(JwtGuard)
     @Post('createBooking')
-    async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<{ message: string, Booking: Booking | null }> {
+    async createBooking(@Body() createBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse> {
         return this.bookingService.createBooking(createBookingDto);
     }
 
