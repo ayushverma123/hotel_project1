@@ -1,45 +1,42 @@
-import { IsNumber, IsDate, IsString, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsMobilePhone, IsEmail, IsNumber, IsDate, IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateCustomerDto {
 
-    @IsString()
-    name: string;
-    
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     firstName: string;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     lastName: string;
 
-    @IsString()
+    @ApiProperty()
+    @IsEmail()
     @IsNotEmpty()
     email: string;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     password: string;
 
-    @IsNumber()
+    @ApiProperty()
+    @IsMobilePhone()
     @IsNotEmpty()
     mobileNo: number;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     date_of_birth: Date;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     gender: string;
-
-    @IsString()
-    @IsNotEmpty()
-    HOTEL_NAME: string;
-
-
-
-
 
 
 }
