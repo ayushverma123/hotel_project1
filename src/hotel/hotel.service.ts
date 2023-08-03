@@ -1,3 +1,4 @@
+import { Query } from 'mongoose';
 import { CastError, SortOrder } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { InternalServerErrorException } from '@nestjs/common';
@@ -16,7 +17,7 @@ export class HotelService {
   constructor(@InjectModel('Hotel') private readonly hotelModel: Model<Hotel>) { }
 
 
-  async createHotel(createHotelDto: CreateHotelDto): Promise<{ message: string, hotel: Hotel | null }> {
+  async createHotel(createHotelDto: CreateHotelDto): Promise<HotelInterfaceResponse | null > {
     // Check if a customer with the same details already exists
     const existingHotel = await this.hotelModel.findOne({
       address: createHotelDto.address,
@@ -33,18 +34,24 @@ export class HotelService {
     const createdHotel = await this.hotelModel.create(createHotelDto);
     await createdHotel.save();
 
-    const successMessage = 'Hotel created successfully';
-    return { message: successMessage, hotel: createdHotel };
+    return {
+      code: 200,
+      message: 'Hotel created successfully',
+      status: 'success',
+      data: createdHotel,
+    };
+
   }
+
 
   async getAllHotels(): Promise<any> {
     return this.hotelModel.find().exec();
   }
-
+ 
   async getFilteredHotels(queryDto: GetQueryDto): Promise<any> {
     const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder } = queryDto;
     const query = this.hotelModel.find();
-
+  
     if (search) {
       query.or([
         { hotel_name: { $regex: search, $options: 'i' } },
@@ -54,24 +61,26 @@ export class HotelService {
         { address: { $regex: search, $options: 'i' } },
       ]);
     }
-
+  
     if (pageNumber && pageSize) {
       const skip = (pageNumber - 1) * pageSize;
       query.skip(skip).limit(pageSize);
     }
-
+  
     if (sortField && sortOrder) {
       const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
       query.sort(sortOptions);
     }
-
+  
     const data = await query.exec();
-    const totalRecords = await this.getTotalHotelCount();
-
+    
+    // Get the total count based on the applied query
+    const totalRecords = await this.hotelModel.find(query.getFilter()).countDocuments();
+  
     return { data, totalRecords };
   }
-
-  async getTotalHotelCount(): Promise<number> {
+  
+   async getTotalHotelCount(): Promise<number> {
     return this.hotelModel.countDocuments({});
   }
 
