@@ -1,3 +1,4 @@
+import { Request } from '@nestjs/common/decorators';
 import { ApiOkResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
@@ -39,7 +40,7 @@ export class CustomerController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @UsePipes(new ValidationPipe())
   @Post('create')
-  async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<Customer> {
+  async createCustomer(@Body() createCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse> {
     return this.customerService.create(createCustomerDto);
   }
 
@@ -68,7 +69,7 @@ export class CustomerController {
   }
 
   @UseGuards(JwtGuard)
-  @Put('change-password')
+  @Put('changepassword')
   async changerCustomerPassword(@Body() body: { email: string, newPassword: string }): Promise<any> {
     const { email, newPassword } = body;
 
@@ -85,6 +86,24 @@ export class CustomerController {
 
   }
 
+  @UseGuards(JwtGuard) // Protect this route using LocalAuthGuard
+  @Put('change-password')
+  async changePassword(@Body() body: {newpassword: string },@Request() req) {
+    // Access the email property from the user object
+    //console.log('getProfile - User Email:', email);
+    const {newpassword}=body;
+    const id = req.user.user.email;
+    console.log(id);
+    if(id)
+    {
+    const password=await this.customerService.updatePassword1(id, newpassword)
+    console.log(password);
+  
+    }
+    return {message:"Password changed successfully", newpassword};
+  
+  }
+  
 
   @ApiOkResponse({ description: 'Successfully retrieved customer.' })
   @ApiNotFoundResponse({ description: 'Customer not found.' })
