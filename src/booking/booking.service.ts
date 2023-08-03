@@ -15,7 +15,7 @@ export class BookingService {
 
 
 
-  async createBooking(createBookingDto: CreateBookingDto): Promise<{ message: string, Booking: Booking | null }> {
+  async createBooking(createBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse | null > {
     const { cusId, ...bookingData } = createBookingDto;
     const customer = await this.customerModel.findById(cusId);
     if (!customer) {
@@ -40,8 +40,12 @@ export class BookingService {
       const createdBooking = await this.bookingModel.create(newBookingData);
       await createdBooking.save();
 
-      const successMessage = 'Booking created successfully';
-      return { message: successMessage, Booking: createdBooking };
+      return {
+        code: 200,
+        message: 'Booking created successfully',
+        status: 'success',
+        data: createdBooking,
+      };
 
     }
   }
@@ -68,14 +72,23 @@ export class BookingService {
       query.skip(skip).limit(pageSize);
     }
 
+    if (fromDate && toDate) {
+      query.where({
+        booking_date: {
+          $gte: new Date(fromDate),
+          $lte: new Date(toDate),
+        },
+      });
+    }
+
     if (sortField && sortOrder) {
       const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
       query.sort(sortOptions);
     }
 
     const data = await query.exec();
-    const totalRecords = await this.getTotalHotelCount();
-
+    const totalRecords = await this.bookingModel.find(query.getFilter()).countDocuments();
+  
     return { data, totalRecords };
   }
 
