@@ -36,7 +36,7 @@ export class HotelController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @UsePipes(new ValidationPipe())
   @Post('create')
-  async createHotel(@Body() createHotelDto: CreateHotelDto): Promise<{ message: string, hotel: Hotel | null }> {
+  async createHotel(@Body() createHotelDto: CreateHotelDto): Promise<HotelInterfaceResponse| null> {
     return this.hotelService.createHotel(createHotelDto);
   }
 
