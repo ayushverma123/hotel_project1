@@ -1,3 +1,6 @@
+import { Role } from '../entities/customer.schema';
+import { Roles } from 'src/auth/guards/roles.decorator';
+import { RoleGuard } from 'src/auth/guards/role.guard';             
 import { Request } from '@nestjs/common/decorators';
 import { ApiOkResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
@@ -30,7 +33,8 @@ export class CustomerController {
 
   @ApiOkResponse({ description: 'Successfully retrieved customer.' })
   @ApiNotFoundResponse({ description: 'Customer not found.' })
-  @UseGuards(JwtGuard)
+  @Roles(Role.Admin)
+  @UseGuards(JwtGuard, RoleGuard)
   @Get('getbyid/:id')
   async getCustomerById(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.getCustomerById(id);

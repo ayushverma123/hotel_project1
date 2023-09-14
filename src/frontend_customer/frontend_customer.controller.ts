@@ -1,4 +1,4 @@
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/auth.service';  
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import { Customer } from 'src/entities/customer.schema';
 import { CustomerService } from 'src/customer/customer.service';
@@ -6,7 +6,7 @@ import { CreateCustomerDto } from 'src/customer/dto/createCustomer-dto';
 import { Booking } from 'src/entities/booking.schema';
 import { BookingService } from 'src/booking/booking.service';
 import { CreateBookingDto } from 'src/booking/dto/createBooking-dto';
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Request, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Request, UsePipes, ValidationPipe } from '@nestjs/common';  
 import { Hotel } from '../entities/hotel.schema';
 import { HotelService } from 'src/hotel/hotel.service';
 import { GetQueryDto } from 'src/hotel/dto/query-dto';

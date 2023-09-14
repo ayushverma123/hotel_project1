@@ -14,7 +14,6 @@ export class BookingService {
     @InjectModel('Customer') private readonly customerModel: Model<Customer>) { }
 
 
-
   async createBooking(createBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse | null > {
     const { cusId, ...bookingData } = createBookingDto;
     const customer = await this.customerModel.findById(cusId);
@@ -208,7 +207,7 @@ export class BookingService {
       data: deletedBooking,
     };
   }
-
+   
 
   async deleteBookingnew(id: string): Promise<BookingInterfaceResponse> {
     try {
@@ -218,7 +217,6 @@ export class BookingService {
         throw new NotFoundException('Unable to delete booking');
       }
       else {
-
         return {
           code: 200,
           message: 'Booking deleted successfully',
@@ -236,8 +234,7 @@ export class BookingService {
       // Handle other potential errors or rethrow them
       throw error;
     }
-  }
-
+  }   
 
 
   async cancelBooking(id: string): Promise<BookingInterfaceResponse | null> {
@@ -249,9 +246,12 @@ export class BookingService {
 
     return {
       code: 200,
-      message: 'Booking canceled successfully',
+      message: 'Booking canceled successfully',   
       status: 'success',
-      data: deletedBooking,
+      data: deletedBooking
     };
   }
 }
+
+
+

@@ -19,15 +19,19 @@ import { BookingService } from './booking/booking.service';
 import { BookingModule } from './booking/booking.module';
 import { FrontendCustomerModule } from './frontend_customer/frontend_customer.module';
 import { APP_FILTER } from '@nestjs/core';
+import { ContestModule, } from './contest/quizQuestion/contest.module';
+import { UserService } from './contest/user/user.service';
+import { UserController } from './contest/user/user.controller';
+import { OptionService } from './contest/quizQuestionOption/options.service';
 
 @Module({
-  imports: [MongooseModule.forRoot("mongodb+srv://ayushv657:gkczp9LJXpkYnN7u@cluster0.stthbi5.mongodb.net/mydatabase?retryWrites=true&w=majority"),
+  imports: [MongooseModule.forRoot("mongodb+srv://ayushv657:gkczp9LJXpkYnN7u@cluster0.stthbi5.mongodb.net/mydatabase?retryWrites=true&w=majority"),   
     AuthModule,
-    CustomerModule, HotelModule, BookingModule, FrontendCustomerModule,],
-  controllers: [],
-  providers: [{
+    CustomerModule, HotelModule, BookingModule, FrontendCustomerModule, ContestModule], 
+  controllers: [ ],
+  providers: [{   
     provide: APP_FILTER,
     useClass: HttpExceptionFilter,
-  }]
+  },]
 })
 export class AppModule { }

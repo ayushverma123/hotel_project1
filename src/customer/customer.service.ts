@@ -12,7 +12,6 @@ export class CustomerService {
   constructor(@InjectModel('Customer') private readonly customerModel: Model<Customer>) { }
 
 
-
   async create(createCustomerDto: CreateCustomerDto): Promise<CustomerInterfaceResponse | null> {
     // Check if a customer with the same email or mobile number already exists
     const existingCustomer = await this.customerModel.findOne({

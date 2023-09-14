@@ -5,6 +5,5 @@ export interface HotelInterfaceResponse {
   message: string;
   status: string;
   data: Hotel;
-
 }
 

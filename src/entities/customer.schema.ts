@@ -9,8 +9,15 @@ export interface Customer extends Document {
   date_of_birth: Date;
   gender: string,
   password: string;
-
+  role: Role;
 }
+
+
+export enum Role {
+  Admin = 'admin',
+  Customer = 'customer'
+}
+
 
 export const CustomerSchema: Schema = new Schema({
 
@@ -21,6 +28,7 @@ export const CustomerSchema: Schema = new Schema({
   date_of_birth: { type: Date, required: true },
   gender: { type: String, required: true },
   password: { type: String, required: true },
+  role: { type: String, enum: [Role.Admin, Role.Customer], default: Role.Customer }
 });
 
 

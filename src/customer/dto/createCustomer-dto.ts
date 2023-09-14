@@ -1,3 +1,4 @@
+import { Role } from 'src/entities/customer.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMobilePhone, IsEmail, IsNumber, IsDate, IsString, IsNotEmpty } from 'class-validator';
 
@@ -38,5 +39,12 @@ export class CreateCustomerDto {
     @IsNotEmpty()
     gender: string;
 
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    role: Role; // Include the role property for testing
+  }
 
-}
+    
+
+

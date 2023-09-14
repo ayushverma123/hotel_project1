@@ -34,7 +34,8 @@ export class AuthController {
   getProfile(@Request() req) {
     // Access the email property from the user object
     //console.log('getProfile - User Email:', email);
-    const id = req.user.user.email;
+    const id = req.user.user.role;
+    console.log(id);
     const loggedUser = this.userService.getCustomerById1(id);
     return loggedUser;
   }

@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common/exceptions';
+import { BadRequestException,NotFoundException } from '@nestjs/common/exceptions';
 import { Model } from 'mongoose';
 import { Otp } from 'src/entities/otp.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -27,12 +27,27 @@ export class AuthService {
     return null;
   }
 
+  /*
+  async login(user: any) {
+    // Extract the role property from the user object
+    const userRole = user._doc.role;
+  
+    // Create the payload for the JWT token
+    const payload = { role: userRole };
+  
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
+  }
+  */
 
   async login(user: any) {
-    // Check the content of the "user" object
-    const email = user._doc._id;
-    const payload = { email };
-
+    // Extract the role property from the user object using _doc
+    const userRole = user._doc.role;
+  
+    // Create the payload for the JWT token
+    const payload = { role: userRole };
+  
     return {
       accessToken: this.jwtService.sign(payload),
     };

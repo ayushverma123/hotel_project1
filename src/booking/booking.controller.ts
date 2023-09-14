@@ -23,8 +23,7 @@ export class BookingController {
     return this.bookingService.getFilteredBookings(queryDto);
 
   }
-
-
+  
   @ApiOkResponse({ description: 'Successfully retrieved Booking.' })
   @ApiNotFoundResponse({ description: 'Booking not found.' })
   @Get('getbyid/:id')
