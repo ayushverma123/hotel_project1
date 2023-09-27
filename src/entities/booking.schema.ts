@@ -3,7 +3,6 @@ import * as bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 
 export interface Booking extends Document {
-   
     
     booking_date: string,
     checkout_date: string,
@@ -13,13 +12,14 @@ export interface Booking extends Document {
     hotel: string;
     hote_id: ObjectId;
     customer_email: string;
+    customer_name: string;
     
 }
 
 export const BookingSchema: Schema = new Schema({
  
 
- cusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer',},
+ cusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer',},   
  booking_date:{ type: Date, required: true }, 
  checkout_date: { type: Date, required: true },
  room_alloted: { type: Number, required: true },
@@ -28,6 +28,7 @@ export const BookingSchema: Schema = new Schema({
  hote_id: { type: ObjectId, required: true},
  hotel: { type:String},
  customer_email: { type: String},
+ customer_name: { type: String},
  
   
 });
