@@ -8,6 +8,7 @@ import { Customer } from 'src/entities/customer.schema';
 import { GetQueryDto } from './dto/query-dto';
 import { BookingInterfaceResponse } from './interface/BookingResponse-interface';
 
+/*
 @Injectable()
 export class BookingService {
   constructor(@InjectModel('Booking') private readonly bookingModel: Model<Booking>,
@@ -49,6 +50,55 @@ export class BookingService {
 
     }
   }
+*/
+@Injectable()
+export class BookingService {
+  constructor(@InjectModel('Booking') private readonly bookingModel: Model<Booking>,
+  @InjectModel('Hotel') private readonly hotelModel: Model<Hotel>,
+    @InjectModel('Customer') private readonly customerModel: Model<Customer>) { }
+
+  async createBooking(createBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse | null > {   
+    const { cusId, hote_id, ...bookingData } = createBookingDto;
+    const customer = await this.customerModel.findById(cusId);
+    const hotel = await this.hotelModel.findById(hote_id);
+    console.log(hotel);
+    if (!customer) {
+      throw new NotFoundException("Invalid customer");
+    }
+    const newBookingData = {
+      ...bookingData,
+      cusId: customer._id,
+      customerID: customer._id,
+      hote_id: hotel._id,
+      hotel: hotel.hotel_name,
+      customer_name: customer.firstName,
+
+
+    };
+
+    const existingBooking = await this.bookingModel.findOne({
+      hote_id: createBookingDto.hote_id,
+      cusId: customer._id,
+    });
+
+    if (existingBooking) {
+      // Customer with the same details already exists, throw an error
+      throw new NotFoundException('Booking already exist');
+    }
+    else {
+      const createdBooking = await this.bookingModel.create(newBookingData);
+      await createdBooking.save();
+
+      return {
+        code: 200,
+        message: 'Booking created successfully',
+        status: 'success',
+        data: createdBooking,
+      };
+
+    }
+  }
+
 
 
   async getFilteredBookings(queryDto: GetQueryDto): Promise<any> {
